@@ -48,7 +48,7 @@ interface AddStockOutDialogProps {
     inventoryItems: InventoryItem[];
 }
 
-const descriptions = [
+export const descriptions = [
     "Jakarta's Needs",
     "Surabaya's Needs",
     "Customer Purchases",
@@ -187,3 +187,5 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
     </Dialog>
   );
 }
+
+    
