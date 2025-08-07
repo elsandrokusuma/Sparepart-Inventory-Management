@@ -101,7 +101,6 @@ export const transactions: Transaction[] = [
     quantity: 5,
     date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Jane Smith',
-    status: 'Approved',
   },
   {
     id: 'T003',
@@ -111,7 +110,6 @@ export const transactions: Transaction[] = [
     quantity: 10,
     date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Jane Smith',
-    status: 'Approved',
   },
   {
     id: 'T004',
@@ -131,7 +129,6 @@ export const transactions: Transaction[] = [
     quantity: 20,
     date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Mike Ross',
-    status: 'Approved',
   },
 ];
 

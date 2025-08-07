@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/table';
 import { AddStockOutDialog } from '@/components/stock-out/add-stock-out-dialog';
 import { ClientFormattedDate } from '@/components/client-formatted-date';
-import { Badge } from '@/components/ui/badge';
 
 export default function StockOutPage() {
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
@@ -34,7 +33,6 @@ export default function StockOutPage() {
       quantity: values.quantity,
       date: new Date().toISOString(),
       user: 'Admin', // Assuming a static user for now
-      status: 'Approved', // Stock outs are now directly approved
     };
     setTransactions(prev => [newTransaction, ...prev]);
   };
@@ -64,7 +62,6 @@ export default function StockOutPage() {
                 <TableHead>Item</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead>User</TableHead>
-                <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -77,21 +74,6 @@ export default function StockOutPage() {
                     <TableCell className="font-medium">{tx.item}</TableCell>
                     <TableCell>{tx.quantity}</TableCell>
                     <TableCell>{tx.user}</TableCell>
-                    <TableCell>
-                      {tx.status ? (
-                       <Badge
-                       variant={tx.status === 'Approved' ? 'default' : 'destructive'}
-                       className={
-                         tx.status === 'Approved' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 
-                         'bg-red-500/20 text-red-400 border-red-500/30'
-                       }
-                     >
-                       {tx.status}
-                     </Badge>
-                    ) : (
-                      <span className="text-muted-foreground">-</span>
-                    )}
-                  </TableCell>
                   </TableRow>
                 );
               })}

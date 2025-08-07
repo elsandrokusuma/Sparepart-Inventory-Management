@@ -27,8 +27,8 @@ export default function RecentTransactions({ transactions }: RecentTransactionsP
                     <ArrowDownLeft className="h-4 w-4 text-green-500"/>
                 </span>
               ) : (
-                <span className={`flex h-full w-full items-center justify-center rounded-full ${transaction.status === 'Pending' ? 'bg-yellow-500/20' : 'bg-blue-500/20'}`}>
-                    <ArrowUpRight className={`h-4 w-4 ${transaction.status === 'Pending' ? 'text-yellow-500' : 'text-blue-500'}`}/>
+                <span className={`flex h-full w-full items-center justify-center rounded-full bg-blue-500/20`}>
+                    <ArrowUpRight className={`h-4 w-4 text-blue-500`}/>
                 </span>
               )}
             </Avatar>
