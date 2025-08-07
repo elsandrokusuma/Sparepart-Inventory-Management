@@ -19,6 +19,7 @@ import { AddPreOrderDialog } from '@/components/pre-orders/add-pre-order-dialog'
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
+import { PreOrderDetailsDialog } from '@/components/pre-orders/pre-order-details-dialog';
 
 
 export default function PreOrdersPage() {
@@ -26,6 +27,7 @@ export default function PreOrdersPage() {
   const [activeTab, setActiveTab] = useState<'jakarta' | 'surabaya'>('jakarta');
   const [selectedOrders, setSelectedOrders] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
+  const [selectedPreOrderDetails, setSelectedPreOrderDetails] = useState<PreOrder | null>(null);
 
   const handleAddPreOrder = (newOrderData: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location'>) => {
     const newOrder: PreOrder = {
@@ -50,6 +52,10 @@ export default function PreOrdersPage() {
       ...prev,
       [orderId]: isSelected,
     }));
+  };
+
+  const handleRowClick = (order: PreOrder) => {
+    setSelectedPreOrderDetails(order);
   };
 
   const handleSubmitForApproval = () => {
@@ -99,8 +105,13 @@ export default function PreOrdersPage() {
           </TableHeader>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order.id} data-state={selectedOrders[order.id] ? 'selected' : ''}>
-                 <TableCell>
+              <TableRow 
+                key={order.id} 
+                data-state={selectedOrders[order.id] ? 'selected' : ''}
+                onClick={() => handleRowClick(order)}
+                className="cursor-pointer"
+              >
+                 <TableCell onClick={(e) => e.stopPropagation()}>
                   {order.status === 'Awaiting Approval' && (
                      <Checkbox
                         checked={selectedOrders[order.id] || false}
@@ -184,6 +195,13 @@ export default function PreOrdersPage() {
           {renderPreOrderTable(surabayaPreOrders)}
         </TabsContent>
       </Tabs>
+
+      {selectedPreOrderDetails && (
+        <PreOrderDetailsDialog
+            preOrder={selectedPreOrderDetails}
+            onOpenChange={() => setSelectedPreOrderDetails(null)}
+        />
+      )}
     </div>
   );
 }
