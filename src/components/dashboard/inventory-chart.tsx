@@ -15,11 +15,11 @@ const chartConfig = {
 
 export default function InventoryChart() {
   const data = inventoryItems.reduce((acc, item) => {
-    const existingCategory = acc.find((c) => c.name === item.category);
-    if (existingCategory) {
-      existingCategory.total += item.stock;
+    const existingLocation = acc.find((c) => c.name === item.location);
+    if (existingLocation) {
+      existingLocation.total += item.stock;
     } else {
-      acc.push({ name: item.category, total: item.stock });
+      acc.push({ name: item.location, total: item.stock });
     }
     return acc;
   }, [] as { name: string; total: number }[]);
@@ -27,7 +27,7 @@ export default function InventoryChart() {
   return (
     <>
       <CardHeader>
-        <CardTitle>Inventory by Category</CardTitle>
+        <CardTitle>Inventory by Location</CardTitle>
       </CardHeader>
       <CardContent className="pl-2">
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
