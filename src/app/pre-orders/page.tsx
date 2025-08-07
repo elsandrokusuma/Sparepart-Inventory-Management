@@ -95,6 +95,7 @@ export default function PreOrdersPage() {
               <TableHead className="w-12">
                 {/* <Checkbox /> */}
               </TableHead>
+              <TableHead>No.</TableHead>
               <TableHead>Order ID</TableHead>
               <TableHead>Company</TableHead>
               <TableHead>Item</TableHead>
@@ -104,7 +105,7 @@ export default function PreOrdersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.map((order) => (
+            {orders.map((order, index) => (
               <TableRow 
                 key={order.id} 
                 data-state={selectedOrders[order.id] ? 'selected' : ''}
@@ -120,6 +121,7 @@ export default function PreOrdersPage() {
                       />
                   )}
                  </TableCell>
+                <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell className="font-medium">{order.id}</TableCell>
                 <TableCell>{order.company}</TableCell>
                 <TableCell>{order.item}</TableCell>

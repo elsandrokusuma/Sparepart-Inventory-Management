@@ -28,6 +28,9 @@ export function PreOrderDetailsDialog({ preOrder, onOpenChange }: PreOrderDetail
         </DialogHeader>
         <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                <p className="font-semibold text-muted-foreground">Order ID</p>
+                <p>{preOrder.id}</p>
+
                 <p className="font-semibold text-muted-foreground">Company</p>
                 <p>{preOrder.company}</p>
 
