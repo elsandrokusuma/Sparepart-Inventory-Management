@@ -63,7 +63,7 @@ export default function StockOutPage() {
           </p>
         </div>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6">
         <Card>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
