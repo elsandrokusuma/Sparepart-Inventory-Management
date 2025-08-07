@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -13,7 +14,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { inventoryItems as initialInventoryItems, InventoryItem } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Search } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +36,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
 import { EditItemDialog } from '@/components/inventory/edit-item-dialog';
+import { Input } from '@/components/ui/input';
 
 
 const statusVariantMap = {
@@ -53,6 +55,7 @@ export default function InventoryPage() {
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(initialInventoryItems);
   const [itemToDelete, setItemToDelete] = useState<InventoryItem | null>(null);
   const [itemToEdit, setItemToEdit] = useState<InventoryItem | null>(null);
+  const [filter, setFilter] = useState('');
   const { toast } = useToast();
 
   const handleDelete = (item: InventoryItem) => {
@@ -85,6 +88,9 @@ export default function InventoryPage() {
     setInventoryItems([...inventoryItems, { ...newItem, id: newId, status: newStatus }]);
   };
 
+  const filteredItems = inventoryItems.filter(item =>
+    item.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -96,6 +102,15 @@ export default function InventoryPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Filter by name..."
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="pl-9"
+            />
+          </div>
           <AddItemDialog onAddItem={handleAddItem} />
         </div>
       </div>
@@ -115,7 +130,7 @@ export default function InventoryPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {inventoryItems.map((item) => (
+              {filteredItems.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
                     <Image
