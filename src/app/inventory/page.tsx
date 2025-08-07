@@ -14,7 +14,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { InventoryItem } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Search } from 'lucide-react';
+import { MoreHorizontal, Search, Database } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,6 +38,7 @@ import { useToast } from '@/hooks/use-toast';
 import { EditItemDialog } from '@/components/inventory/edit-item-dialog';
 import { Input } from '@/components/ui/input';
 import { addInventoryItem, deleteInventoryItem, getInventoryItems, updateInventoryItem } from '@/lib/firebase/firestore';
+import { seedDatabase } from '@/lib/firebase/seed';
 
 
 const statusVariantMap = {
@@ -100,6 +101,24 @@ export default function InventoryPage() {
     fetchItems();
   };
 
+  const handleSeedDatabase = async () => {
+    try {
+      await seedDatabase();
+      toast({
+        title: "Database Seeded",
+        description: "Successfully populated the inventory with initial data.",
+      });
+      fetchItems();
+    } catch (error) {
+      toast({
+        title: "Seeding Failed",
+        description: "Could not seed the database. Check the console for errors.",
+        variant: "destructive",
+      });
+      console.error(error);
+    }
+  };
+
   const filteredItems = inventoryItems.filter(item =>
     item.name.toLowerCase().includes(filter.toLowerCase())
   );
@@ -123,6 +142,10 @@ export default function InventoryPage() {
               className="pl-9"
             />
           </div>
+           <Button variant="outline" onClick={handleSeedDatabase}>
+            <Database className="mr-2 h-4 w-4" />
+            Seed Database
+          </Button>
           <AddItemDialog onAddItem={handleAddItem} />
         </div>
       </div>
