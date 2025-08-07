@@ -21,7 +21,7 @@ import { ClientFormattedDate } from '@/components/client-formatted-date';
 export default function StockInPage() {
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
 
-  const handleAddStockIn = (values: { itemId: string; quantity: number; supplier: string; }) => {
+  const handleAddStockIn = (values: { itemId: string; quantity: number; from: string; }) => {
     const item = initialInventoryItems.find(i => i.id === values.itemId);
     if (!item) return;
 
@@ -31,7 +31,7 @@ export default function StockInPage() {
       item: item.name,
       itemId: values.itemId,
       quantity: values.quantity,
-      supplier: values.supplier,
+      from: values.from,
       date: new Date().toISOString(),
       user: 'Admin', // Assuming a static user for now
     };
@@ -63,7 +63,7 @@ export default function StockInPage() {
                 <TableHead>Item</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Quantity</TableHead>
-                <TableHead>Supplier</TableHead>
+                <TableHead>From</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -77,7 +77,7 @@ export default function StockInPage() {
                     <TableCell className="font-medium">{tx.item}</TableCell>
                     <TableCell>{item?.location || '-'}</TableCell>
                     <TableCell>{tx.quantity}</TableCell>
-                    <TableCell>{tx.supplier}</TableCell>
+                    <TableCell>{tx.from}</TableCell>
                   </TableRow>
                 );
               })}

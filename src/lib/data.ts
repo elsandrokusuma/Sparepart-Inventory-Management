@@ -17,7 +17,7 @@ export interface Transaction {
   date: string;
   user: string;
   status?: 'Pending' | 'Approved' | 'Rejected';
-  supplier?: string;
+  from?: string; // Changed from supplier
   description?: string;
 }
 
@@ -92,7 +92,7 @@ export const transactions: Transaction[] = [
     quantity: 50,
     date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'John Doe',
-    supplier: 'TechSupplies Inc.',
+    from: 'Items from Vendors',
   },
   {
     id: 'T002',
@@ -122,7 +122,7 @@ export const transactions: Transaction[] = [
     quantity: 100,
     date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'John Doe',
-    supplier: 'Gadgettronics',
+    from: 'Items from Vendors',
   },
   {
     id: 'T005',

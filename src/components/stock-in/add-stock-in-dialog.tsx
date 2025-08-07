@@ -34,12 +34,11 @@ import {
 import { PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { InventoryItem } from '@/lib/data';
-import { SupplierCombobox } from './supplier-combobox';
 
 const stockInSchema = z.object({
   itemId: z.string().min(1, 'Please select an item.'),
   quantity: z.coerce.number().min(1, 'Quantity must be at least 1.'),
-  supplier: z.string().min(1, 'Supplier information is required.'),
+  from: z.string().min(1, 'From information is required.'),
 });
 
 type StockInFormValues = z.infer<typeof stockInSchema>;
@@ -48,6 +47,16 @@ interface AddStockInDialogProps {
     onAddStockIn: (values: StockInFormValues) => void;
     inventoryItems: InventoryItem[];
 }
+
+const fromOptions = [
+    "Items from Jakarta",
+    "Items from Cannibals",
+    "Items from Vendors",
+    "Local Purchases",
+    "Modification Remainder",
+    "Service Remainder",
+    "QC Remainder",
+];
 
 export function AddStockInDialog({ onAddStockIn, inventoryItems }: AddStockInDialogProps) {
   const [open, setOpen] = useState(false);
@@ -58,7 +67,7 @@ export function AddStockInDialog({ onAddStockIn, inventoryItems }: AddStockInDia
     defaultValues: {
       itemId: '',
       quantity: 1,
-      supplier: '',
+      from: '',
     },
   });
 
@@ -137,14 +146,27 @@ export function AddStockInDialog({ onAddStockIn, inventoryItems }: AddStockInDia
             />
             <FormField
               control={form.control}
-              name="supplier"
+              name="from"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Supplier</FormLabel>
-                   <SupplierCombobox
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                <FormItem>
+                  <FormLabel>From</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a source" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {fromOptions.map((desc) => (
+                        <SelectItem key={desc} value={desc}>
+                          {desc}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
