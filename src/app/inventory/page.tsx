@@ -7,18 +7,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { inventoryItems } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { AddItemDialog } from '@/components/inventory/add-item-dialog';
 
 const statusVariantMap = {
   'In Stock': 'default',
@@ -27,9 +28,9 @@ const statusVariantMap = {
 } as const;
 
 const statusColorMap = {
-    'In Stock': 'bg-green-500/20 text-green-400 border-green-500/30',
-    'Low Stock': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-    'Out of Stock': 'bg-red-500/20 text-red-400 border-red-500/30',
+  'In Stock': 'bg-green-500/20 text-green-400 border-green-500/30',
+  'Low Stock': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+  'Out of Stock': 'bg-red-500/20 text-red-400 border-red-500/30',
 } as const;
 
 export default function InventoryPage() {
@@ -43,10 +44,7 @@ export default function InventoryPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Item
-          </Button>
+          <AddItemDialog />
         </div>
       </div>
       <Card>
@@ -82,13 +80,20 @@ export default function InventoryPage() {
                   </TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
-                    <Badge variant={statusVariantMap[item.status]} className={statusColorMap[item.status]}>
+                    <Badge
+                      variant={statusVariantMap[item.status]}
+                      className={statusColorMap[item.status]}
+                    >
                       {item.status}
                     </Badge>
                   </TableCell>
                   <TableCell>{item.category}</TableCell>
-                  <TableCell className="hidden md:table-cell">${item.price.toFixed(2)}</TableCell>
-                  <TableCell className="hidden md:table-cell">{item.stock}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    ${item.price.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {item.stock}
+                  </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
