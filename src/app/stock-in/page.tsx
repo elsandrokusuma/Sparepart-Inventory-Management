@@ -72,21 +72,26 @@ export default function StockInPage() {
               <TableRow>
                 <TableHead>Date</TableHead>
                 <TableHead>Item</TableHead>
+                <TableHead>Location</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead>Supplier</TableHead>
                 <TableHead>User</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {stockInTransactions.map((tx) => (
-                <TableRow key={tx.id}>
-                  <TableCell>{format(new Date(tx.date), 'PPP p')}</TableCell>
-                  <TableCell className="font-medium">{tx.item}</TableCell>
-                  <TableCell>{tx.quantity}</TableCell>
-                  <TableCell>{tx.supplier}</TableCell>
-                  <TableCell>{tx.user}</TableCell>
-                </TableRow>
-              ))}
+              {stockInTransactions.map((tx) => {
+                const item = initialInventoryItems.find(i => i.id === tx.itemId);
+                return (
+                  <TableRow key={tx.id}>
+                    <TableCell>{format(new Date(tx.date), 'PPP p')}</TableCell>
+                    <TableCell className="font-medium">{tx.item}</TableCell>
+                    <TableCell>{item?.location || '-'}</TableCell>
+                    <TableCell>{tx.quantity}</TableCell>
+                    <TableCell>{tx.supplier}</TableCell>
+                    <TableCell>{tx.user}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </CardContent>
