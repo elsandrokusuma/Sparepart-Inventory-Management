@@ -63,8 +63,8 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
     onAddStockOut(values);
     const itemName = inventoryItems.find(i => i.id === values.itemId)?.name || 'Item';
     toast({
-      title: "Request Created",
-      description: `Stock out request for ${values.quantity}x "${itemName}" submitted for approval.`,
+      title: "Stock Out Recorded",
+      description: `Successfully recorded stock out for ${values.quantity}x "${itemName}".`,
     });
     setOpen(false);
     form.reset();
@@ -80,14 +80,14 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
       <DialogTrigger asChild>
         <Button>
           <PackageMinus className="mr-2 h-4 w-4" />
-          Create Request
+          Create Stock Out
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>Create Stock Out Request</DialogTitle>
+          <DialogTitle>Create Stock Out</DialogTitle>
           <DialogDescription>
-            Fill out the form below to request an item for stock out. It will require approval.
+            Fill out the form below to record an outgoing stock transaction.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -139,7 +139,7 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit">Submit for Approval</Button>
+              <Button type="submit">Record Stock Out</Button>
             </DialogFooter>
           </form>
         </Form>

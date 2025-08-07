@@ -34,7 +34,7 @@ export default function StockOutPage() {
       quantity: values.quantity,
       date: new Date().toISOString(),
       user: 'Admin', // Assuming a static user for now
-      status: 'Pending',
+      status: 'Approved', // Stock outs are now directly approved
     };
     setTransactions(prev => [newTransaction, ...prev]);
   };
@@ -47,7 +47,7 @@ export default function StockOutPage() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Stock Out History</h2>
           <p className="text-muted-foreground">
-            A log of all outgoing inventory requests.
+            A log of all outgoing inventory.
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -80,11 +80,10 @@ export default function StockOutPage() {
                     <TableCell>
                       {tx.status ? (
                        <Badge
-                       variant={tx.status === 'Pending' ? 'secondary' : (tx.status === 'Approved' ? 'default' : 'destructive')}
+                       variant={tx.status === 'Approved' ? 'default' : 'destructive'}
                        className={
-                         tx.status === 'Pending' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 
-                         (tx.status === 'Approved' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 
-                         'bg-red-500/20 text-red-400 border-red-500/30')
+                         tx.status === 'Approved' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 
+                         'bg-red-500/20 text-red-400 border-red-500/30'
                        }
                      >
                        {tx.status}

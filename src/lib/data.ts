@@ -27,17 +27,8 @@ export interface PreOrder {
   itemId: string;
   quantity: number;
   orderDate: string;
-  status: 'Pending' | 'Fulfilled';
+  status: 'Pending' | 'Fulfilled' | 'Approved' | 'Rejected';
   location: 'Jakarta' | 'Surabaya';
-}
-
-export interface ApprovalRequest {
-  id: string;
-  transactionId: string;
-  item: string;
-  quantity: number;
-  requester: string;
-  requestDate: string;
 }
 
 export const inventoryItems: InventoryItem[] = [
@@ -120,7 +111,7 @@ export const transactions: Transaction[] = [
     quantity: 10,
     date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Jane Smith',
-    status: 'Pending',
+    status: 'Approved',
   },
   {
     id: 'T004',
@@ -175,26 +166,18 @@ export const preOrders: PreOrder[] = [
     status: 'Fulfilled',
     location: 'Jakarta',
   },
+  {
+    id: 'PO-004',
+    customer: 'Delta Co',
+    item: '27" 4K Monitor',
+    itemId: '3',
+    quantity: 15,
+    orderDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    status: 'Pending',
+    location: 'Surabaya',
+  },
 ];
 
-export const approvalRequests: ApprovalRequest[] = [
-  {
-    id: 'AR-001',
-    transactionId: 'T003',
-    item: 'Mechanical Keyboard',
-    quantity: 10,
-    requester: 'Jane Smith',
-    requestDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    id: 'AR-002',
-    transactionId: 'T006',
-    item: '27" 4K Monitor',
-    quantity: 15,
-    requester: 'Mike Ross',
-    requestDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-  },
-];
 
 export const locations = [
     { value: 'R1B1T1', label: 'R1B1T1' },
