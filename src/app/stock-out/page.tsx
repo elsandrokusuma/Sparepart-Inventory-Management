@@ -62,7 +62,7 @@ export default function StockOutPage() {
                 <TableHead>Date</TableHead>
                 <TableHead>Item</TableHead>
                 <TableHead>Quantity</TableHead>
-                <TableHead>Keterangan</TableHead>
+                <TableHead>For</TableHead>
                 <TableHead>User</TableHead>
               </TableRow>
             </TableHeader>

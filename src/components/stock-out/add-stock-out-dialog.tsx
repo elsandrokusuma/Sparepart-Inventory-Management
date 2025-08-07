@@ -38,7 +38,7 @@ import { InventoryItem } from '@/lib/data';
 const stockOutSchema = z.object({
   itemId: z.string().min(1, 'Please select an item.'),
   quantity: z.coerce.number().min(1, 'Quantity must be at least 1.'),
-  description: z.string().min(1, 'Keterangan is required.'),
+  description: z.string().min(1, 'For is required.'),
 });
 
 type StockOutFormValues = z.infer<typeof stockOutSchema>;
@@ -153,7 +153,7 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Keterangan</FormLabel>
+                  <FormLabel>For</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
