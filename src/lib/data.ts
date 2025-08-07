@@ -252,3 +252,10 @@ export const suppliers = [
     { value: "HENGXIN", label: "HENGXIN" },
     { value: "LISOUND", label: "LISOUND" }
 ];
+
+export const companies = [
+    { value: "SCS", label: "SCS" },
+    { value: "ABOT", label: "ABOT" },
+    { value: "KZT", label: "KZT" },
+    { value: "SJ MANUAL", label: "SJ MANUAL" },
+];

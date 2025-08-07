@@ -33,7 +33,7 @@ import {
 } from '@/components/ui/select';
 import { PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { InventoryItem, PreOrder } from '@/lib/data';
+import { InventoryItem, PreOrder, companies } from '@/lib/data';
 
 const addPreOrderSchema = z.object({
   company: z.string().min(1, 'Company name is required.'),
@@ -110,9 +110,23 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Company Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Alpha Corp" {...field} />
-                  </FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a company" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {companies.map((company) => (
+                        <SelectItem key={company.value} value={company.value}>
+                          {company.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
