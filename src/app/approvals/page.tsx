@@ -17,6 +17,16 @@ import { format } from 'date-fns';
 import { Check, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+interface GroupedPreOrder {
+  orderId: string;
+  items: string[];
+  totalQuantity: number;
+  orderDate: string;
+  originalIds: string[];
+  company: string;
+  location: string;
+}
+
 export default function ApprovalsPage() {
   const [preOrders, setPreOrders] = useState<PreOrder[]>(initialPreOrders);
   const { toast } = useToast();
@@ -24,7 +34,7 @@ export default function ApprovalsPage() {
   const handleApproval = (orderId: string, newStatus: 'Approved' | 'Rejected') => {
     setPreOrders(currentOrders =>
       currentOrders.map(order =>
-        order.id === orderId ? { ...order, status: newStatus } : order
+        order.orderId === orderId ? { ...order, status: newStatus } : order
       )
     );
     toast({
@@ -34,6 +44,31 @@ export default function ApprovalsPage() {
   };
   
   const pendingApprovals = preOrders.filter(order => order.status === 'Pending');
+
+  const groupedOrders = pendingApprovals.reduce((acc, order) => {
+    if (!order.orderId) return acc;
+
+    if (!acc[order.orderId]) {
+      acc[order.orderId] = {
+        orderId: order.orderId,
+        items: [],
+        totalQuantity: 0,
+        orderDate: order.orderDate,
+        originalIds: [],
+        company: order.company,
+        location: order.location,
+      };
+    }
+    
+    acc[order.orderId].items.push(order.item);
+    acc[order.orderId].totalQuantity += order.quantity;
+    acc[order.orderId].originalIds.push(order.id);
+
+    return acc;
+  }, {} as Record<string, GroupedPreOrder>);
+
+  const groupedApprovals = Object.values(groupedOrders);
+
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -51,29 +86,33 @@ export default function ApprovalsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Order ID</TableHead>
+                <TableHead>Company</TableHead>
+                <TableHead>Location</TableHead>
                 <TableHead>Item</TableHead>
-                <TableHead>Quantity</TableHead>
+                <TableHead>Total Quantity</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pendingApprovals.map((request) => (
-                <TableRow key={request.id}>
+              {groupedApprovals.map((group) => (
+                <TableRow key={group.orderId}>
                   <TableCell className="font-medium">
-                    {request.id}
+                    {group.orderId}
                   </TableCell>
-                  <TableCell>{request.item}</TableCell>
-                  <TableCell>{request.quantity}</TableCell>
+                  <TableCell>{group.company}</TableCell>
+                   <TableCell>{group.location}</TableCell>
+                  <TableCell>{group.items.join(', ')}</TableCell>
+                  <TableCell>{group.totalQuantity}</TableCell>
                   <TableCell>
-                    {format(new Date(request.orderDate), 'PPP')}
+                    {format(new Date(group.orderDate), 'PPP')}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button 
                       variant="outline" 
                       size="icon" 
                       className="h-8 w-8 border-green-500 text-green-500 hover:bg-green-500/10 hover:text-green-500"
-                      onClick={() => handleApproval(request.id, 'Approved')}
+                      onClick={() => handleApproval(group.orderId, 'Approved')}
                     >
                       <Check className="h-4 w-4" />
                       <span className="sr-only">Approve</span>
@@ -82,7 +121,7 @@ export default function ApprovalsPage() {
                       variant="outline" 
                       size="icon" 
                       className="h-8 w-8 border-red-500 text-red-500 hover:bg-red-500/10 hover:text-red-500"
-                      onClick={() => handleApproval(request.id, 'Rejected')}
+                      onClick={() => handleApproval(group.orderId, 'Rejected')}
                     >
                       <X className="h-4 w-4" />
                       <span className="sr-only">Reject</span>
