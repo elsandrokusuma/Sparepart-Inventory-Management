@@ -95,7 +95,6 @@ export default function PreOrdersPage() {
               <TableHead className="w-12">
                 {/* <Checkbox /> */}
               </TableHead>
-              <TableHead>No.</TableHead>
               <TableHead>Order ID</TableHead>
               <TableHead>Company</TableHead>
               <TableHead>Item</TableHead>
@@ -121,7 +120,6 @@ export default function PreOrdersPage() {
                       />
                   )}
                  </TableCell>
-                <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell className="font-medium">{order.id}</TableCell>
                 <TableCell>{order.company}</TableCell>
                 <TableCell>{order.item}</TableCell>
