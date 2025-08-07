@@ -36,6 +36,7 @@ import { useToast } from '@/hooks/use-toast';
 import { InventoryItem, PreOrder, companies } from '@/lib/data';
 
 const addPreOrderSchema = z.object({
+  orderId: z.string().optional(),
   company: z.string().min(1, 'Company name is required.'),
   itemId: z.string().min(1, 'Please select an item.'),
   quantity: z.coerce.number().min(1, 'Quantity must be at least 1.'),
@@ -57,6 +58,7 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
   const form = useForm<AddPreOrderFormValues>({
     resolver: zodResolver(addPreOrderSchema),
     defaultValues: {
+      orderId: '',
       company: '',
       itemId: '',
       quantity: 1,
@@ -68,6 +70,7 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
     if (!selectedItem) return;
 
     onAddPreOrder({ 
+        orderId: values.orderId,
         company: values.company,
         item: selectedItem.name,
         itemId: values.itemId,
@@ -104,6 +107,19 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+            <FormField
+              control={form.control}
+              name="orderId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Order ID (Optional)</FormLabel>
+                   <FormControl>
+                    <Input placeholder="e.g., PO-001" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="company"

@@ -22,7 +22,8 @@ export interface Transaction {
 }
 
 export interface PreOrder {
-  id: string;
+  id: string; // Unique ID for the row item
+  orderId?: string; // Grouping ID for the order
   company: string;
   item: string;
   itemId: string;
@@ -138,7 +139,8 @@ export const transactions: Transaction[] = [
 
 export const preOrders: PreOrder[] = [
   {
-    id: 'PO-001',
+    id: 'PRE-001',
+    orderId: 'PO-001',
     company: 'Alpha Corp',
     item: 'Ergonomic Office Chair',
     itemId: '4',
@@ -148,7 +150,8 @@ export const preOrders: PreOrder[] = [
     location: 'Jakarta',
   },
   {
-    id: 'PO-002',
+    id: 'PRE-002',
+    orderId: 'PO-002',
     company: 'Beta LLC',
     item: 'Standing Desk',
     itemId: '6',
@@ -158,7 +161,8 @@ export const preOrders: PreOrder[] = [
     location: 'Surabaya',
   },
   {
-    id: 'PO-003',
+    id: 'PRE-003',
+    orderId: 'PO-003',
     company: 'Gamma Inc.',
     item: 'Mechanical Keyboard',
     itemId: '2',
@@ -168,7 +172,8 @@ export const preOrders: PreOrder[] = [
     location: 'Jakarta',
   },
   {
-    id: 'PO-004',
+    id: 'PRE-004',
+    orderId: 'PO-004',
     company: 'Delta Co',
     item: '27" 4K Monitor',
     itemId: '3',

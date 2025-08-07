@@ -30,13 +30,26 @@ export default function PreOrdersPage() {
   const [selectedPreOrderDetails, setSelectedPreOrderDetails] = useState<PreOrder | null>(null);
 
   const handleAddPreOrder = (newOrderData: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location'>) => {
+    
+    let orderIdToUse = newOrderData.orderId;
+
+    if (!orderIdToUse) {
+      const maxId = preOrders.reduce((max, order) => {
+        const idNum = parseInt(order.id.split('-')[1]);
+        return idNum > max ? idNum : max;
+      }, 0);
+      orderIdToUse = `PO-${(maxId + 1).toString().padStart(3, '0')}`;
+    }
+    
     const newOrder: PreOrder = {
       ...newOrderData,
-      id: `PO-${(preOrders.length + 1).toString().padStart(3, '0')}`,
+      id: `PRE-${Math.random().toString(36).substr(2, 9)}`,
+      orderId: orderIdToUse,
       orderDate: new Date().toISOString(),
       status: 'Awaiting Approval',
       location: activeTab === 'jakarta' ? 'Jakarta' : 'Surabaya',
     };
+
     setPreOrders(currentOrders => [newOrder, ...currentOrders]);
   };
   
@@ -120,7 +133,7 @@ export default function PreOrdersPage() {
                       />
                   )}
                  </TableCell>
-                <TableCell className="font-medium">{order.id}</TableCell>
+                <TableCell className="font-medium">{order.orderId}</TableCell>
                 <TableCell>{order.company}</TableCell>
                 <TableCell>{order.item}</TableCell>
                 <TableCell className="text-right">{order.quantity}</TableCell>
