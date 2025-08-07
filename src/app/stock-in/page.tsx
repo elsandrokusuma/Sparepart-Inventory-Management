@@ -1,13 +1,9 @@
-
 "use client";
 
 import { useState } from 'react';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { transactions as initialTransactions, Transaction, InventoryItem, inventoryItems as initialInventoryItems } from '@/lib/data';
 import {
@@ -18,9 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { format } from 'date-fns';
-import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
 import { AddStockInDialog } from '@/components/stock-in/add-stock-in-dialog';
 import { ClientFormattedDate } from '@/components/client-formatted-date';
 
@@ -61,12 +54,6 @@ export default function StockInPage() {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Stock In History</CardTitle>
-          <CardDescription>
-            A log of all received inventory.
-          </CardDescription>
-        </CardHeader>
         <CardContent className="!p-0">
           <Table>
             <TableHeader>
