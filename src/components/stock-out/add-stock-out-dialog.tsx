@@ -1,0 +1,177 @@
+
+"use client";
+
+import { useState } from 'react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { PackageMinus } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { InventoryItem } from '@/lib/data';
+
+const stockOutSchema = z.object({
+  itemId: z.string().min(1, 'Please select an item.'),
+  quantity: z.coerce.number().min(1, 'Quantity must be at least 1.'),
+  destination: z.enum(['Jakarta', 'Surabaya'], {
+    required_error: 'You need to select a destination.',
+  }),
+});
+
+type StockOutFormValues = z.infer<typeof stockOutSchema>;
+
+interface AddStockOutDialogProps {
+    onAddStockOut: (values: StockOutFormValues) => void;
+    inventoryItems: InventoryItem[];
+}
+
+export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOutDialogProps) {
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+
+  const form = useForm<StockOutFormValues>({
+    resolver: zodResolver(stockOutSchema),
+    defaultValues: {
+      itemId: '',
+      quantity: 1,
+    },
+  });
+
+  function onSubmit(values: StockOutFormValues) {
+    onAddStockOut(values);
+    const itemName = inventoryItems.find(i => i.id === values.itemId)?.name || 'Item';
+    toast({
+      title: "Request Created",
+      description: `Stock out request for ${values.quantity}x "${itemName}" submitted for approval.`,
+    });
+    setOpen(false);
+    form.reset();
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) {
+            form.reset();
+        }
+    }}>
+      <DialogTrigger asChild>
+        <Button>
+          <PackageMinus className="mr-2 h-4 w-4" />
+          Create Request
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[480px]">
+        <DialogHeader>
+          <DialogTitle>Create Stock Out Request</DialogTitle>
+          <DialogDescription>
+            Fill out the form below to request an item for stock out. It will require approval.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <FormField
+              control={form.control}
+              name="itemId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Product</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a product" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {inventoryItems
+                        .filter((item) => item.stock > 0)
+                        .map((item) => (
+                          <SelectItem key={item.id} value={item.id}>
+                            {item.name} (Stock: {item.stock})
+                          </SelectItem>
+                        ))
+                      }
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="0" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="destination"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Destination</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a destination" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Jakarta">Jakarta</SelectItem>
+                      <SelectItem value="Surabaya">Surabaya</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">Submit for Approval</Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
