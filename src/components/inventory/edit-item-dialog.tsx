@@ -22,22 +22,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { InventoryItem } from '@/lib/data';
+import { LocationCombobox } from './location-combobox';
 
 const editItemSchema = z.object({
     name: z.string().min(1, 'Item name is required.'),
     imageUrl: z.string().url({ message: "Please enter a valid image URL." }).optional().or(z.literal('')),
     stock: z.coerce.number().min(0, 'Stock must be a positive number.'),
-    location: z.enum(['Jakarta', 'Surabaya', 'Both'], { required_error: 'Location is required.'}),
+    location: z.string().min(1, 'Location is required.'),
 });
 
 type EditItemFormValues = z.infer<typeof editItemSchema>;
@@ -123,20 +117,12 @@ export function EditItemDialog({ item, onUpdateItem, onOpenChange }: EditItemDia
                     control={form.control}
                     name="location"
                     render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="flex flex-col">
                         <FormLabel>Location</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a location" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            <SelectItem value="Jakarta">Jakarta</SelectItem>
-                            <SelectItem value="Surabaya">Surabaya</SelectItem>
-                            <SelectItem value="Both">Both</SelectItem>
-                            </SelectContent>
-                        </Select>
+                          <LocationCombobox
+                            value={field.value}
+                            onChange={field.onChange}
+                          />
                         <FormMessage />
                         </FormItem>
                     )}

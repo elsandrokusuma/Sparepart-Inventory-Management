@@ -1,10 +1,11 @@
+
 export interface InventoryItem {
   id: string;
   name: string;
   stock: number;
   status: 'In Stock' | 'Low Stock' | 'Out of Stock';
   imageUrl: string;
-  location: 'Jakarta' | 'Surabaya' | 'Both';
+  location: string;
 }
 
 export interface Transaction {
@@ -48,7 +49,7 @@ export const inventoryItems: InventoryItem[] = [
     stock: 120,
     status: 'In Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    location: 'Both',
+    location: 'R1B1T1',
   },
   {
     id: '2',
@@ -56,7 +57,7 @@ export const inventoryItems: InventoryItem[] = [
     stock: 8,
     status: 'Low Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    location: 'Jakarta',
+    location: 'R1B1T2',
   },
   {
     id: '3',
@@ -64,7 +65,7 @@ export const inventoryItems: InventoryItem[] = [
     stock: 35,
     status: 'In Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    location: 'Both',
+    location: 'R1B1T3',
   },
   {
     id: '4',
@@ -72,7 +73,7 @@ export const inventoryItems: InventoryItem[] = [
     stock: 0,
     status: 'Out of Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    location: 'Surabaya',
+    location: 'R1B1T4',
   },
   {
     id: '5',
@@ -80,7 +81,7 @@ export const inventoryItems: InventoryItem[] = [
     stock: 250,
     status: 'In Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    location: 'Jakarta',
+    location: 'R1B2T1',
   },
   {
     id: '6',
@@ -88,7 +89,7 @@ export const inventoryItems: InventoryItem[] = [
     stock: 5,
     status: 'Low Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    location: 'Surabaya',
+    location: 'R1B2T2',
   },
 ];
 
@@ -200,4 +201,38 @@ export const approvalRequests: ApprovalRequest[] = [
     requester: 'Mike Ross',
     requestDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
   },
+];
+
+export const locations = [
+    { value: 'R1B1T1', label: 'R1B1T1' },
+    { value: 'R1B1T2', label: 'R1B1T2' },
+    { value: 'R1B1T3', label: 'R1B1T3' },
+    { value: 'R1B1T4', label: 'R1B1T4' },
+    { value: 'R1B2T1', label: 'R1B2T1' },
+    { value: 'R1B2T2', label: 'R1B2T2' },
+    { value: 'R1B2T3', label: 'R1B2T3' },
+    { value: 'R1B2T4', label: 'R1B2T4' },
+    { value: 'R2B1T1', label: 'R2B1T1' },
+    { value: 'R2B1T2', label: 'R2B1T2' },
+    { value: 'R2B1T3', label: 'R2B1T3' },
+    { value: 'R2B1T4', label: 'R2B1T4' },
+    { value: 'R2B2T1', label: 'R2B2T1' },
+    { value: 'R2B2T2', label: 'R2B2T2' },
+    { value: 'R2B2T3', label: 'R2B2T3' },
+    { value: 'R2B2T4', label: 'R2B2T4' },
+    { value: 'R3B1T1', label: 'R3B1T1' },
+    { value: 'R3B1T2', label: 'R3B1T2' },
+    { value: 'R3B1T3', label: 'R3B1T3' },
+    { value: 'R3B1T4', label: 'R3B1T4' },
+    { value: 'R3B2T1', label: 'R3B2T1' },
+    { value: 'R3B2T2', label: 'R3B2T2' },
+    { value: 'R3B2T3', label: 'R3B2T3' },
+    { value: 'R3B2T4', label: 'R3B2T4' },
+    { value: 'R3B3T1', label: 'R3B3T1' },
+    { value: 'R3B3T2', label: 'R3B3T2' },
+    { value: 'R3B3T3', label: 'R3B3T3' },
+    { value: 'R3B3T4', label: 'R3B3T4' },
+    { value: 'L4B1T1', label: 'L4B1T1' },
+    { value: 'L4B1T2', label: 'L4B1T2' },
+    { value: 'L4B1T3', label: 'L4B1T3' },
 ];
