@@ -4,7 +4,6 @@ export interface InventoryItem {
   stock: number;
   status: 'In Stock' | 'Low Stock' | 'Out of Stock';
   imageUrl: string;
-  dataAiHint: string;
   location: 'Jakarta' | 'Surabaya' | 'Both';
 }
 
@@ -49,7 +48,6 @@ export const inventoryItems: InventoryItem[] = [
     stock: 120,
     status: 'In Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    dataAiHint: 'wireless mouse',
     location: 'Both',
   },
   {
@@ -58,7 +56,6 @@ export const inventoryItems: InventoryItem[] = [
     stock: 8,
     status: 'Low Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    dataAiHint: 'mechanical keyboard',
     location: 'Jakarta',
   },
   {
@@ -67,7 +64,6 @@ export const inventoryItems: InventoryItem[] = [
     stock: 35,
     status: 'In Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    dataAiHint: 'computer monitor',
     location: 'Both',
   },
   {
@@ -76,7 +72,6 @@ export const inventoryItems: InventoryItem[] = [
     stock: 0,
     status: 'Out of Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    dataAiHint: 'office chair',
     location: 'Surabaya',
   },
   {
@@ -85,7 +80,6 @@ export const inventoryItems: InventoryItem[] = [
     stock: 250,
     status: 'In Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    dataAiHint: 'usb hub',
     location: 'Jakarta',
   },
   {
@@ -94,7 +88,6 @@ export const inventoryItems: InventoryItem[] = [
     stock: 5,
     status: 'Low Stock',
     imageUrl: 'https://placehold.co/100x100.png',
-    dataAiHint: 'standing desk',
     location: 'Surabaya',
   },
 ];

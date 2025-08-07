@@ -38,7 +38,6 @@ const editItemSchema = z.object({
     imageUrl: z.string().url({ message: "Please enter a valid image URL." }).optional().or(z.literal('')),
     stock: z.coerce.number().min(0, 'Stock must be a positive number.'),
     location: z.enum(['Jakarta', 'Surabaya', 'Both'], { required_error: 'Location is required.'}),
-    dataAiHint: z.string().optional(),
 });
 
 type EditItemFormValues = z.infer<typeof editItemSchema>;
@@ -59,7 +58,6 @@ export function EditItemDialog({ item, onUpdateItem, onOpenChange }: EditItemDia
       imageUrl: item.imageUrl,
       stock: item.stock,
       location: item.location,
-      dataAiHint: item.dataAiHint,
     },
   });
   
@@ -69,7 +67,6 @@ export function EditItemDialog({ item, onUpdateItem, onOpenChange }: EditItemDia
         imageUrl: item.imageUrl,
         stock: item.stock,
         location: item.location,
-        dataAiHint: item.dataAiHint,
     });
   }, [item, form]);
 
@@ -153,19 +150,6 @@ export function EditItemDialog({ item, onUpdateItem, onOpenChange }: EditItemDia
                   <FormLabel>Image URL</FormLabel>
                   <FormControl>
                     <Input placeholder="https://example.com/image.png" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="dataAiHint"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image Search Hint</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. 'wireless mouse'" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

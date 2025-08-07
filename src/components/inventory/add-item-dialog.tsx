@@ -41,7 +41,6 @@ const addItemSchema = z.object({
     imageUrl: z.string().url({ message: "Please enter a valid image URL." }).optional().or(z.literal('')),
     stock: z.coerce.number().min(0, 'Stock must be a positive number.'),
     location: z.enum(['Jakarta', 'Surabaya', 'Both'], { required_error: 'Location is required.'}),
-    dataAiHint: z.string().optional(),
 });
 
 type AddItemFormValues = z.infer<typeof addItemSchema>;
@@ -61,7 +60,6 @@ export function AddItemDialog({ onAddItem }: AddItemDialogProps) {
       name: '',
       imageUrl: '',
       stock: 0,
-      dataAiHint: '',
     },
   });
 
@@ -155,19 +153,6 @@ export function AddItemDialog({ onAddItem }: AddItemDialogProps) {
                   <FormLabel>Image URL</FormLabel>
                   <FormControl>
                     <Input placeholder="https://example.com/image.png" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-             <FormField
-              control={form.control}
-              name="dataAiHint"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image Search Hint</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. 'wireless mouse'" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

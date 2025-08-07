@@ -124,7 +124,6 @@ export default function InventoryPage() {
                       height="64"
                       src={item.imageUrl || 'https://placehold.co/100x100.png'}
                       width="64"
-                      data-ai-hint={item.dataAiHint}
                     />
                   </TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
