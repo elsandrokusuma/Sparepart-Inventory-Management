@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AddStockOutDialog, descriptions } from '@/components/stock-out/add-stock-out-dialog';
+import { AddStockOutDialog, descriptions, userOptions as allUserOptions } from '@/components/stock-out/add-stock-out-dialog';
 import { ClientFormattedDate } from '@/components/client-formatted-date';
 import { Button } from '@/components/ui/button';
 import { Filter, X } from 'lucide-react';
@@ -47,7 +47,7 @@ export default function StockOutPage() {
 
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const handleAddStockOut = (values: { itemId: string; quantity: number; description: string; }) => {
+  const handleAddStockOut = (values: { itemId: string; quantity: number; description: string; user: string; }) => {
     const item = initialInventoryItems.find(i => i.id === values.itemId);
     if (!item) return;
 
@@ -59,7 +59,7 @@ export default function StockOutPage() {
       quantity: values.quantity,
       description: values.description,
       date: new Date().toISOString(),
-      user: 'Admin', // Assuming a static user for now
+      user: values.user,
     };
     setTransactions(prev => [newTransaction, ...prev]);
   };
@@ -316,5 +316,3 @@ function FilterCombobox({ type, options, value, onChange }: { type: string, opti
     </Popover>
   )
 }
-
-    

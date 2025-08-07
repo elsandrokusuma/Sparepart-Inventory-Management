@@ -33,12 +33,13 @@ import {
 } from '@/components/ui/select';
 import { PackageMinus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { InventoryItem } from '@/lib/data';
+import { InventoryItem, transactions } from '@/lib/data';
 
 const stockOutSchema = z.object({
   itemId: z.string().min(1, 'Please select an item.'),
   quantity: z.coerce.number().min(1, 'Quantity must be at least 1.'),
   description: z.string().min(1, 'For is required.'),
+  user: z.string().min(1, 'User is required.'),
 });
 
 type StockOutFormValues = z.infer<typeof stockOutSchema>;
@@ -59,6 +60,8 @@ export const descriptions = [
     "Damage",
 ];
 
+export const userOptions = Array.from(new Set(transactions.map(tx => tx.user)));
+
 export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOutDialogProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
@@ -69,6 +72,7 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
       itemId: '',
       quantity: 1,
       description: '',
+      user: '',
     },
   });
 
@@ -135,19 +139,48 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+                <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Quantity</FormLabel>
+                    <FormControl>
+                        <Input type="number" placeholder="0" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="user"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>User</FormLabel>
+                        <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                        >
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select user" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {userOptions.map((user) => (
+                                <SelectItem key={user} value={user}>
+                                {user}
+                                </SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
             <FormField
               control={form.control}
               name="description"
@@ -155,7 +188,7 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
                 <FormItem>
                   <FormLabel>For</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValuechange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -187,5 +220,3 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
     </Dialog>
   );
 }
-
-    
