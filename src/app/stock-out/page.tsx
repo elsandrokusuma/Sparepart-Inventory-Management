@@ -61,6 +61,7 @@ export default function StockOutPage() {
               <TableRow>
                 <TableHead>Date</TableHead>
                 <TableHead>Item</TableHead>
+                <TableHead>Location</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead>For</TableHead>
                 <TableHead>User</TableHead>
@@ -68,12 +69,14 @@ export default function StockOutPage() {
             </TableHeader>
             <TableBody>
               {stockOutTransactions.map((tx) => {
+                 const item = initialInventoryItems.find(i => i.id === tx.itemId);
                 return (
                   <TableRow key={tx.id}>
                     <TableCell>
                       <ClientFormattedDate date={tx.date} format="PPP p" />
                     </TableCell>
                     <TableCell className="font-medium">{tx.item}</TableCell>
+                    <TableCell>{item?.location || '-'}</TableCell>
                     <TableCell>{tx.quantity}</TableCell>
                     <TableCell>{tx.description || '-'}</TableCell>
                     <TableCell>{tx.user}</TableCell>
