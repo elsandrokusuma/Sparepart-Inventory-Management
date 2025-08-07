@@ -37,7 +37,6 @@ import { useToast } from '@/hooks/use-toast';
 const addItemSchema = z.object({
     name: z.string().min(1, 'Item name is required.'),
     sku: z.string().min(1, 'SKU is required.'),
-    category: z.string().min(1, 'Category is required.'),
     price: z.coerce.number().min(0, 'Price must be a positive number.'),
     stock: z.coerce.number().min(0, 'Stock must be a positive number.'),
     location: z.enum(['Jakarta', 'Surabaya', 'Both'], { required_error: 'Location is required.'}),
@@ -52,7 +51,6 @@ export function AddItemDialog() {
     defaultValues: {
       name: '',
       sku: '',
-      category: '',
       price: 0,
       stock: 0,
     },
@@ -112,19 +110,6 @@ export function AddItemDialog() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <FormControl>
-                        <Input placeholder="e.g., Electronics" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
             />
             <div className="grid grid-cols-2 gap-4">
                 <FormField

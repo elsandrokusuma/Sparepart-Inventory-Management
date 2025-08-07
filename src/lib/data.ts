@@ -2,7 +2,6 @@ export interface InventoryItem {
   id: string;
   name: string;
   sku: string;
-  category: string;
   stock: number;
   price: number;
   status: 'In Stock' | 'Low Stock' | 'Out of Stock';
@@ -50,7 +49,6 @@ export const inventoryItems: InventoryItem[] = [
     id: '1',
     name: 'Wireless Mouse',
     sku: 'WM-1001',
-    category: 'Electronics',
     stock: 120,
     price: 25.99,
     status: 'In Stock',
@@ -62,7 +60,6 @@ export const inventoryItems: InventoryItem[] = [
     id: '2',
     name: 'Mechanical Keyboard',
     sku: 'MK-2022',
-    category: 'Electronics',
     stock: 8,
     price: 119.99,
     status: 'Low Stock',
@@ -74,7 +71,6 @@ export const inventoryItems: InventoryItem[] = [
     id: '3',
     name: '27" 4K Monitor',
     sku: 'MON-4K-27',
-    category: 'Electronics',
     stock: 35,
     price: 399.99,
     status: 'In Stock',
@@ -86,7 +82,6 @@ export const inventoryItems: InventoryItem[] = [
     id: '4',
     name: 'Ergonomic Office Chair',
     sku: 'CHR-ERGO-01',
-    category: 'Furniture',
     stock: 0,
     price: 249.5,
     status: 'Out of Stock',
@@ -98,7 +93,6 @@ export const inventoryItems: InventoryItem[] = [
     id: '5',
     name: 'USB-C Hub',
     sku: 'HUB-USBC-8P',
-    category: 'Accessories',
     stock: 250,
     price: 49.99,
     status: 'In Stock',
@@ -110,7 +104,6 @@ export const inventoryItems: InventoryItem[] = [
     id: '6',
     name: 'Standing Desk',
     sku: 'DSK-STND-01',
-    category: 'Furniture',
     stock: 5,
     price: 450.0,
     status: 'Low Stock',
