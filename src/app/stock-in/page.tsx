@@ -1,3 +1,4 @@
+
 "use client";
 
 import { z } from 'zod';
@@ -28,8 +29,17 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { inventoryItems } from '@/lib/data';
-import { Upload } from 'lucide-react';
+import { inventoryItems, transactions } from '@/lib/data';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { format } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
 
 const stockInSchema = z.object({
   itemId: z.string().min(1, 'Please select an item.'),
@@ -52,6 +62,8 @@ export default function StockInPage() {
     // Handle form submission
   }
 
+  const stockInTransactions = transactions.filter(tx => tx.type === 'IN');
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -62,17 +74,18 @@ export default function StockInPage() {
           </p>
         </div>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <CardHeader>
-                <CardTitle>Record Manually</CardTitle>
-                <CardDescription>
-                  Fill in the details for the incoming stock.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+      
+      <Card>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <CardHeader>
+              <CardTitle>Create New Stock In</CardTitle>
+              <CardDescription>
+                Fill in the details for the incoming stock.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-6 md:grid-cols-3">
                 <FormField
                   control={form.control}
                   name="itemId"
@@ -129,38 +142,47 @@ export default function StockInPage() {
                     </FormItem>
                   )}
                 />
-              </CardContent>
-              <CardFooter>
-                <Button type="submit">Add to Stock</Button>
-              </CardFooter>
-            </form>
-          </Form>
-        </Card>
-        <Card>
-            <CardHeader>
-                <CardTitle>Bulk Import</CardTitle>
-                <CardDescription>
-                    Process a CSV file to update inventory in bulk.
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="flex flex-col items-center justify-center space-y-2 rounded-lg border-2 border-dashed border-muted-foreground/50 p-8 text-center">
-                    <Upload className="h-10 w-10 text-muted-foreground"/>
-                    <p className="text-sm text-muted-foreground">Drag & drop your CSV file here, or click to select a file.</p>
-                    <Input id="csv-upload" type="file" className="sr-only"/>
-                    <Button variant="outline" size="sm" onClick={() => document.getElementById('csv-upload')?.click()}>
-                        Select File
-                    </Button>
-                </div>
+              </div>
             </CardContent>
-            <CardFooter className="flex-col items-start gap-2">
-                <Button>Process CSV</Button>
-                <p className="text-xs text-muted-foreground">
-                    Required columns: ItemID, Quantity, Supplier
-                </p>
+            <CardFooter>
+              <Button type="submit">Add to Stock</Button>
             </CardFooter>
-        </Card>
-      </div>
+          </form>
+        </Form>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Stock In History</CardTitle>
+          <CardDescription>
+            A log of all received inventory.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="!p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Item</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Supplier</TableHead>
+                <TableHead>User</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {stockInTransactions.map((tx) => (
+                <TableRow key={tx.id}>
+                  <TableCell>{format(new Date(tx.date), 'PPP p')}</TableCell>
+                  <TableCell className="font-medium">{tx.item}</TableCell>
+                  <TableCell>{tx.quantity}</TableCell>
+                  <TableCell>{tx.supplier}</TableCell>
+                  <TableCell>{tx.user}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }
