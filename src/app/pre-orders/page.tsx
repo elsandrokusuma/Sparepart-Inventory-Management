@@ -22,10 +22,11 @@ export default function PreOrdersPage() {
   const [preOrders, setPreOrders] = useState<PreOrder[]>(initialPreOrders);
   const [activeTab, setActiveTab] = useState<'jakarta' | 'surabaya'>('jakarta');
 
-  const handleAddPreOrder = (newOrderData: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location'>) => {
+  const handleAddPreOrder = (newOrderData: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location' | 'customer'>) => {
     const newOrder: PreOrder = {
       ...newOrderData,
       id: `PO-${(preOrders.length + 1).toString().padStart(3, '0')}`,
+      customer: `Customer #${preOrders.length + 1}`, // Placeholder customer
       orderDate: new Date().toISOString(),
       status: 'Pending',
       location: activeTab === 'jakarta' ? 'Jakarta' : 'Surabaya',
@@ -47,7 +48,6 @@ export default function PreOrdersPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Order ID</TableHead>
-              <TableHead>Customer</TableHead>
               <TableHead>Item</TableHead>
               <TableHead className="text-right">Quantity</TableHead>
               <TableHead>Order Date</TableHead>
@@ -58,7 +58,6 @@ export default function PreOrdersPage() {
             {orders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.id}</TableCell>
-                <TableCell>{order.customer}</TableCell>
                 <TableCell>{order.item}</TableCell>
                 <TableCell className="text-right">{order.quantity}</TableCell>
                 <TableCell>

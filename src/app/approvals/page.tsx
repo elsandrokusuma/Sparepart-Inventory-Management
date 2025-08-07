@@ -51,7 +51,6 @@ export default function ApprovalsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Order ID</TableHead>
-                <TableHead>Customer</TableHead>
                 <TableHead>Item</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead>Date</TableHead>
@@ -64,7 +63,6 @@ export default function ApprovalsPage() {
                   <TableCell className="font-medium">
                     {request.id}
                   </TableCell>
-                  <TableCell>{request.customer}</TableCell>
                   <TableCell>{request.item}</TableCell>
                   <TableCell>{request.quantity}</TableCell>
                   <TableCell>
