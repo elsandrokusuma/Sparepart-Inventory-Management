@@ -3,7 +3,6 @@ export interface InventoryItem {
   name: string;
   sku: string;
   stock: number;
-  price: number;
   status: 'In Stock' | 'Low Stock' | 'Out of Stock';
   imageUrl: string;
   dataAiHint: string;
@@ -50,7 +49,6 @@ export const inventoryItems: InventoryItem[] = [
     name: 'Wireless Mouse',
     sku: 'WM-1001',
     stock: 120,
-    price: 25.99,
     status: 'In Stock',
     imageUrl: 'https://placehold.co/100x100.png',
     dataAiHint: 'wireless mouse',
@@ -61,7 +59,6 @@ export const inventoryItems: InventoryItem[] = [
     name: 'Mechanical Keyboard',
     sku: 'MK-2022',
     stock: 8,
-    price: 119.99,
     status: 'Low Stock',
     imageUrl: 'https://placehold.co/100x100.png',
     dataAiHint: 'mechanical keyboard',
@@ -72,7 +69,6 @@ export const inventoryItems: InventoryItem[] = [
     name: '27" 4K Monitor',
     sku: 'MON-4K-27',
     stock: 35,
-    price: 399.99,
     status: 'In Stock',
     imageUrl: 'https://placehold.co/100x100.png',
     dataAiHint: 'computer monitor',
@@ -83,7 +79,6 @@ export const inventoryItems: InventoryItem[] = [
     name: 'Ergonomic Office Chair',
     sku: 'CHR-ERGO-01',
     stock: 0,
-    price: 249.5,
     status: 'Out of Stock',
     imageUrl: 'https://placehold.co/100x100.png',
     dataAiHint: 'office chair',
@@ -94,7 +89,6 @@ export const inventoryItems: InventoryItem[] = [
     name: 'USB-C Hub',
     sku: 'HUB-USBC-8P',
     stock: 250,
-    price: 49.99,
     status: 'In Stock',
     imageUrl: 'https://placehold.co/100x100.png',
     dataAiHint: 'usb hub',
@@ -105,7 +99,6 @@ export const inventoryItems: InventoryItem[] = [
     name: 'Standing Desk',
     sku: 'DSK-STND-01',
     stock: 5,
-    price: 450.0,
     status: 'Low Stock',
     imageUrl: 'https://placehold.co/100x100.png',
     dataAiHint: 'standing desk',

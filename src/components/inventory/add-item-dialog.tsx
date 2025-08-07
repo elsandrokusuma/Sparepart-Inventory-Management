@@ -37,7 +37,6 @@ import { useToast } from '@/hooks/use-toast';
 const addItemSchema = z.object({
     name: z.string().min(1, 'Item name is required.'),
     sku: z.string().min(1, 'SKU is required.'),
-    price: z.coerce.number().min(0, 'Price must be a positive number.'),
     stock: z.coerce.number().min(0, 'Stock must be a positive number.'),
     location: z.enum(['Jakarta', 'Surabaya', 'Both'], { required_error: 'Location is required.'}),
 });
@@ -51,7 +50,6 @@ export function AddItemDialog() {
     defaultValues: {
       name: '',
       sku: '',
-      price: 0,
       stock: 0,
     },
   });
@@ -114,19 +112,6 @@ export function AddItemDialog() {
             <div className="grid grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Price</FormLabel>
-                        <FormControl>
-                            <Input type="number" placeholder="0.00" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
                     name="stock"
                     render={({ field }) => (
                         <FormItem>
@@ -138,29 +123,30 @@ export function AddItemDialog() {
                         </FormItem>
                     )}
                 />
+                 <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a location" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            <SelectItem value="Jakarta">Jakarta</SelectItem>
+                            <SelectItem value="Surabaya">Surabaya</SelectItem>
+                            <SelectItem value="Both">Both</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
             </div>
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a location" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Jakarta">Jakarta</SelectItem>
-                      <SelectItem value="Surabaya">Surabaya</SelectItem>
-                      <SelectItem value="Both">Both</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+           
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel

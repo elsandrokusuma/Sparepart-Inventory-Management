@@ -7,10 +7,6 @@ import { inventoryItems, transactions, preOrders } from '@/lib/data';
 
 export default function DashboardPage() {
   const totalStock = inventoryItems.reduce((sum, item) => sum + item.stock, 0);
-  const stockValue = inventoryItems.reduce(
-    (sum, item) => sum + item.stock * item.price,
-    0
-  );
   const pendingPreOrders = preOrders.filter(
     (order) => order.status === 'Pending'
   ).length;
@@ -25,12 +21,6 @@ export default function DashboardPage() {
           value={totalStock.toLocaleString()}
           icon={Package}
           description="All items across locations"
-        />
-        <StatCard
-          title="Stock Value"
-          value={`$${stockValue.toLocaleString()}`}
-          icon={DollarSign}
-          description="Estimated value of inventory"
         />
         <StatCard
           title="Pending Pre-Orders"

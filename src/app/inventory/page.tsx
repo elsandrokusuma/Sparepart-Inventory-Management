@@ -57,7 +57,6 @@ export default function InventoryPage() {
                 </TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="hidden md:table-cell">Price</TableHead>
                 <TableHead className="hidden md:table-cell">Stock</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
@@ -85,9 +84,6 @@ export default function InventoryPage() {
                     >
                       {item.status}
                     </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    ${item.price.toFixed(2)}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {item.stock}
