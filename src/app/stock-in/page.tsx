@@ -1,35 +1,15 @@
 
 "use client";
 
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { inventoryItems, transactions } from '@/lib/data';
+import { transactions as initialTransactions, Transaction, InventoryItem, inventoryItems as initialInventoryItems } from '@/lib/data';
 import {
   Table,
   TableBody,
@@ -39,27 +19,29 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { format } from 'date-fns';
-
-const stockInSchema = z.object({
-  itemId: z.string().min(1, 'Please select an item.'),
-  quantity: z.coerce.number().min(1, 'Quantity must be at least 1.'),
-  supplier: z.string().min(1, 'Supplier information is required.'),
-});
+import { Button } from '@/components/ui/button';
+import { PlusCircle } from 'lucide-react';
+import { AddStockInDialog } from '@/components/stock-in/add-stock-in-dialog';
 
 export default function StockInPage() {
-  const form = useForm<z.infer<typeof stockInSchema>>({
-    resolver: zodResolver(stockInSchema),
-    defaultValues: {
-      itemId: '',
-      quantity: 1,
-      supplier: '',
-    },
-  });
+  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
 
-  function onSubmit(values: z.infer<typeof stockInSchema>) {
-    console.log(values);
-    // Handle form submission
-  }
+  const handleAddStockIn = (values: { itemId: string; quantity: number; supplier: string; }) => {
+    const item = initialInventoryItems.find(i => i.id === values.itemId);
+    if (!item) return;
+
+    const newTransaction: Transaction = {
+      id: `T${(transactions.length + 1).toString().padStart(3, '0')}`,
+      type: 'IN',
+      item: item.name,
+      itemId: values.itemId,
+      quantity: values.quantity,
+      supplier: values.supplier,
+      date: new Date().toISOString(),
+      user: 'Admin', // Assuming a static user for now
+    };
+    setTransactions(prev => [newTransaction, ...prev]);
+  };
 
   const stockInTransactions = transactions.filter(tx => tx.type === 'IN');
 
@@ -72,83 +54,10 @@ export default function StockInPage() {
             Record new inventory received from suppliers.
           </p>
         </div>
+        <div className="flex items-center space-x-2">
+            <AddStockInDialog onAddStockIn={handleAddStockIn} inventoryItems={initialInventoryItems}/>
+        </div>
       </div>
-      
-      <Card>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardHeader>
-              <CardTitle>Create New Stock In</CardTitle>
-              <CardDescription>
-                Fill in the details for the incoming stock.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-6 md:grid-cols-3">
-                <FormField
-                  control={form.control}
-                  name="itemId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Product</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a product" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {inventoryItems.map((item) => (
-                            <SelectItem key={item.id} value={item.id}>
-                              {item.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="quantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Quantity</FormLabel>
-                      <FormControl>
-                        <Input type="number" placeholder="0" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="supplier"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Supplier</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="e.g., TechSupplies Inc."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit">Add to Stock</Button>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
 
       <Card>
         <CardHeader>
