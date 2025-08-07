@@ -22,6 +22,7 @@ import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import { AddStockInDialog } from '@/components/stock-in/add-stock-in-dialog';
+import { ClientFormattedDate } from '@/components/client-formatted-date';
 
 export default function StockInPage() {
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
@@ -83,7 +84,9 @@ export default function StockInPage() {
                 const item = initialInventoryItems.find(i => i.id === tx.itemId);
                 return (
                   <TableRow key={tx.id}>
-                    <TableCell>{format(new Date(tx.date), 'PPP p')}</TableCell>
+                    <TableCell>
+                      <ClientFormattedDate date={tx.date} format="PPP p" />
+                    </TableCell>
                     <TableCell className="font-medium">{tx.item}</TableCell>
                     <TableCell>{item?.location || '-'}</TableCell>
                     <TableCell>{tx.quantity}</TableCell>
