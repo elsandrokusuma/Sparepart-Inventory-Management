@@ -33,7 +33,8 @@ import {
 } from '@/components/ui/select';
 import { PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { InventoryItem, suppliers } from '@/lib/data';
+import { InventoryItem } from '@/lib/data';
+import { SupplierCombobox } from './supplier-combobox';
 
 const stockInSchema = z.object({
   itemId: z.string().min(1, 'Please select an item.'),
@@ -138,25 +139,12 @@ export function AddStockInDialog({ onAddStockIn, inventoryItems }: AddStockInDia
               control={form.control}
               name="supplier"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Supplier</FormLabel>
-                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a supplier" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {suppliers.map((supplier) => (
-                        <SelectItem key={supplier} value={supplier}>
-                          {supplier}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                   <SupplierCombobox
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
