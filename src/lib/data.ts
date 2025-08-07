@@ -17,7 +17,6 @@ export interface Transaction {
   date: string;
   user: string;
   status?: 'Pending' | 'Approved' | 'Rejected';
-  destination?: 'Jakarta' | 'Surabaya';
   supplier?: string;
 }
 
@@ -37,7 +36,6 @@ export interface ApprovalRequest {
   transactionId: string;
   item: string;
   quantity: number;
-  destination: 'Jakarta' | 'Surabaya';
   requester: string;
   requestDate: string;
 }
@@ -113,7 +111,6 @@ export const transactions: Transaction[] = [
     date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Jane Smith',
     status: 'Approved',
-    destination: 'Jakarta',
   },
   {
     id: 'T003',
@@ -124,7 +121,6 @@ export const transactions: Transaction[] = [
     date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Jane Smith',
     status: 'Pending',
-    destination: 'Surabaya',
   },
   {
     id: 'T004',
@@ -145,7 +141,6 @@ export const transactions: Transaction[] = [
     date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Mike Ross',
     status: 'Approved',
-    destination: 'Jakarta',
   },
 ];
 
@@ -188,7 +183,6 @@ export const approvalRequests: ApprovalRequest[] = [
     transactionId: 'T003',
     item: 'Mechanical Keyboard',
     quantity: 10,
-    destination: 'Surabaya',
     requester: 'Jane Smith',
     requestDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
   },
@@ -197,7 +191,6 @@ export const approvalRequests: ApprovalRequest[] = [
     transactionId: 'T006',
     item: '27" 4K Monitor',
     quantity: 15,
-    destination: 'Jakarta',
     requester: 'Mike Ross',
     requestDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
   },

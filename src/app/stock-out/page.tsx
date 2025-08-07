@@ -22,7 +22,7 @@ import { Badge } from '@/components/ui/badge';
 export default function StockOutPage() {
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
 
-  const handleAddStockOut = (values: { itemId: string; quantity: number; destination: 'Jakarta' | 'Surabaya' }) => {
+  const handleAddStockOut = (values: { itemId: string; quantity: number; }) => {
     const item = initialInventoryItems.find(i => i.id === values.itemId);
     if (!item) return;
 
@@ -32,7 +32,6 @@ export default function StockOutPage() {
       item: item.name,
       itemId: values.itemId,
       quantity: values.quantity,
-      destination: values.destination,
       date: new Date().toISOString(),
       user: 'Admin', // Assuming a static user for now
       status: 'Pending',
@@ -64,7 +63,6 @@ export default function StockOutPage() {
                 <TableHead>Date</TableHead>
                 <TableHead>Item</TableHead>
                 <TableHead>Quantity</TableHead>
-                <TableHead>Destination</TableHead>
                 <TableHead>User</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
@@ -78,7 +76,6 @@ export default function StockOutPage() {
                     </TableCell>
                     <TableCell className="font-medium">{tx.item}</TableCell>
                     <TableCell>{tx.quantity}</TableCell>
-                    <TableCell>{tx.destination}</TableCell>
                     <TableCell>{tx.user}</TableCell>
                     <TableCell>
                       {tx.status ? (

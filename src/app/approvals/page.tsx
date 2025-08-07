@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -31,7 +32,6 @@ export default function ApprovalsPage() {
                 <TableHead>Request ID</TableHead>
                 <TableHead>Item</TableHead>
                 <TableHead>Quantity</TableHead>
-                <TableHead>Destination</TableHead>
                 <TableHead>Requester</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -45,7 +45,6 @@ export default function ApprovalsPage() {
                   </TableCell>
                   <TableCell>{request.item}</TableCell>
                   <TableCell>{request.quantity}</TableCell>
-                  <TableCell>{request.destination}</TableCell>
                   <TableCell>{request.requester}</TableCell>
                   <TableCell>
                     {format(new Date(request.requestDate), 'PPP')}

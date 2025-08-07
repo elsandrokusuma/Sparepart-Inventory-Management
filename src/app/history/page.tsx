@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -50,7 +51,7 @@ export default function HistoryPage() {
                   <TableCell>
                     {tx.type === 'IN'
                       ? `From: ${tx.supplier}`
-                      : `To: ${tx.destination}`}
+                      : '-'}
                   </TableCell>
                   <TableCell>{tx.user}</TableCell>
                   <TableCell>

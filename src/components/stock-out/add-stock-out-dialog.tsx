@@ -38,9 +38,6 @@ import { InventoryItem } from '@/lib/data';
 const stockOutSchema = z.object({
   itemId: z.string().min(1, 'Please select an item.'),
   quantity: z.coerce.number().min(1, 'Quantity must be at least 1.'),
-  destination: z.enum(['Jakarta', 'Surabaya'], {
-    required_error: 'You need to select a destination.',
-  }),
 });
 
 type StockOutFormValues = z.infer<typeof stockOutSchema>;
@@ -138,30 +135,6 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="destination"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Destination</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a destination" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Jakarta">Jakarta</SelectItem>
-                      <SelectItem value="Surabaya">Surabaya</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
@@ -174,4 +147,3 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
     </Dialog>
   );
 }
-
