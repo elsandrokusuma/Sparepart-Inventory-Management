@@ -28,7 +28,7 @@ export interface PreOrder {
   itemId: string;
   quantity: number;
   orderDate: string;
-  status: 'Pending' | 'Fulfilled' | 'Approved' | 'Rejected';
+  status: 'Pending' | 'Fulfilled' | 'Approved' | 'Rejected' | 'Awaiting Approval';
   location: 'Jakarta' | 'Surabaya';
 }
 
@@ -144,7 +144,7 @@ export const preOrders: PreOrder[] = [
     itemId: '4',
     quantity: 20,
     orderDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'Pending',
+    status: 'Awaiting Approval',
     location: 'Jakarta',
   },
   {
@@ -174,7 +174,7 @@ export const preOrders: PreOrder[] = [
     itemId: '3',
     quantity: 15,
     orderDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'Pending',
+    status: 'Awaiting Approval',
     location: 'Surabaya',
   },
 ];

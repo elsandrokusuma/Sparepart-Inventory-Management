@@ -76,7 +76,7 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
 
     toast({
       title: "Pre-Order Created",
-      description: `Successfully created pre-order for "${selectedItem.name}" in ${location === 'jakarta' ? 'Jakarta' : 'Surabaya'}.`,
+      description: `New pre-order is awaiting approval in ${location === 'jakarta' ? 'Jakarta' : 'Surabaya'}.`,
     });
     setOpen(false);
     form.reset();

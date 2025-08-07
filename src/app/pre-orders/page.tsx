@@ -16,18 +16,23 @@ import { Badge } from '@/components/ui/badge';
 import { preOrders as initialPreOrders, inventoryItems, PreOrder } from '@/lib/data';
 import { format } from 'date-fns';
 import { AddPreOrderDialog } from '@/components/pre-orders/add-pre-order-dialog';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/hooks/use-toast';
 
 
 export default function PreOrdersPage() {
   const [preOrders, setPreOrders] = useState<PreOrder[]>(initialPreOrders);
   const [activeTab, setActiveTab] = useState<'jakarta' | 'surabaya'>('jakarta');
+  const [selectedOrders, setSelectedOrders] = useState<Record<string, boolean>>({});
+  const { toast } = useToast();
 
   const handleAddPreOrder = (newOrderData: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location'>) => {
     const newOrder: PreOrder = {
       ...newOrderData,
       id: `PO-${(preOrders.length + 1).toString().padStart(3, '0')}`,
       orderDate: new Date().toISOString(),
-      status: 'Pending',
+      status: 'Awaiting Approval',
       location: activeTab === 'jakarta' ? 'Jakarta' : 'Surabaya',
     };
     setPreOrders(currentOrders => [newOrder, ...currentOrders]);
@@ -40,12 +45,50 @@ export default function PreOrdersPage() {
     (order) => order.location === 'Surabaya'
   );
 
+  const handleSelectOrder = (orderId: string, isSelected: boolean) => {
+    setSelectedOrders(prev => ({
+      ...prev,
+      [orderId]: isSelected,
+    }));
+  };
+
+  const handleSubmitForApproval = () => {
+    const orderIdsToSubmit = Object.keys(selectedOrders).filter(id => selectedOrders[id]);
+    
+    if (orderIdsToSubmit.length === 0) {
+      toast({
+        title: "No Orders Selected",
+        description: "Please select orders to submit for approval.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setPreOrders(currentOrders => 
+      currentOrders.map(order => 
+        orderIdsToSubmit.includes(order.id) ? { ...order, status: 'Pending' } : order
+      )
+    );
+
+    toast({
+      title: "Submitted for Approval",
+      description: `${orderIdsToSubmit.length} order(s) have been sent for approval.`,
+    });
+    setSelectedOrders({});
+  };
+
+  const selectedCount = Object.values(selectedOrders).filter(Boolean).length;
+
+
   const renderPreOrderTable = (orders: typeof preOrders) => (
     <Card>
       <CardContent className="!p-0">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">
+                {/* <Checkbox /> */}
+              </TableHead>
               <TableHead>Order ID</TableHead>
               <TableHead>Company</TableHead>
               <TableHead>Item</TableHead>
@@ -56,7 +99,16 @@ export default function PreOrdersPage() {
           </TableHeader>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order.id}>
+              <TableRow key={order.id} data-state={selectedOrders[order.id] ? 'selected' : ''}>
+                 <TableCell>
+                  {order.status === 'Awaiting Approval' && (
+                     <Checkbox
+                        checked={selectedOrders[order.id] || false}
+                        onCheckedChange={(checked) => handleSelectOrder(order.id, !!checked)}
+                        aria-label={`Select order ${order.id}`}
+                      />
+                  )}
+                 </TableCell>
                 <TableCell className="font-medium">{order.id}</TableCell>
                 <TableCell>{order.company}</TableCell>
                 <TableCell>{order.item}</TableCell>
@@ -68,11 +120,13 @@ export default function PreOrdersPage() {
                   <Badge
                     variant={
                       order.status === 'Pending' ? 'secondary' :
+                      order.status === 'Awaiting Approval' ? 'secondary' :
                       order.status === 'Approved' ? 'default' :
                       order.status === 'Fulfilled' ? 'default' : 'destructive'
                     }
                     className={
                       order.status === 'Pending' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                      order.status === 'Awaiting Approval' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
                       order.status === 'Approved' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
                       order.status === 'Fulfilled' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
                       'bg-red-500/20 text-red-400 border-red-500/30'
@@ -99,6 +153,11 @@ export default function PreOrdersPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
+           {selectedCount > 0 && (
+             <Button onClick={handleSubmitForApproval}>
+              Submit for Approval ({selectedCount})
+            </Button>
+           )}
            <AddPreOrderDialog
             location={activeTab}
             inventoryItems={inventoryItems}
@@ -109,7 +168,10 @@ export default function PreOrdersPage() {
       <Tabs 
         defaultValue="jakarta" 
         className="space-y-4"
-        onValueChange={(value) => setActiveTab(value as 'jakarta' | 'surabaya')}
+        onValueChange={(value) => {
+          setActiveTab(value as 'jakarta' | 'surabaya');
+          setSelectedOrders({});
+        }}
       >
         <TabsList>
           <TabsTrigger value="jakarta">Jakarta</TabsTrigger>
