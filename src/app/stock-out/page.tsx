@@ -63,7 +63,7 @@ export default function StockOutPage() {
                 <TableHead>Item</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead>For</TableHead>
-                <TableHead>User</TableHead>
+                <TableHead>To</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
