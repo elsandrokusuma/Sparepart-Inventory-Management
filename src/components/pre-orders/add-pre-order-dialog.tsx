@@ -85,6 +85,8 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
     form.reset();
   }
 
+  const orderIdPlaceholder = location === 'jakarta' ? 'e.g., PO.JKT001' : 'e.g., PO.SBY001';
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => {
         setOpen(isOpen);
@@ -114,7 +116,7 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
                 <FormItem>
                   <FormLabel>Order ID (Optional)</FormLabel>
                    <FormControl>
-                    <Input placeholder="e.g., PO-001" {...field} />
+                    <Input placeholder={orderIdPlaceholder} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
