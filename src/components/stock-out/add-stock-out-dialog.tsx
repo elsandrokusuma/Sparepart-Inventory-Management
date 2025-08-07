@@ -80,12 +80,12 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
       <DialogTrigger asChild>
         <Button>
           <PackageMinus className="mr-2 h-4 w-4" />
-          Create Stock Out
+          Add Stock Out
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>Create Stock Out</DialogTitle>
+          <DialogTitle>Add Stock Out</DialogTitle>
           <DialogDescription>
             Fill out the form below to record an outgoing stock transaction.
           </DialogDescription>
