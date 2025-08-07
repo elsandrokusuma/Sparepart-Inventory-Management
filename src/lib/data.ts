@@ -18,6 +18,7 @@ export interface Transaction {
   user: string;
   status?: 'Pending' | 'Approved' | 'Rejected';
   supplier?: string;
+  description?: string;
 }
 
 export interface PreOrder {
@@ -101,6 +102,7 @@ export const transactions: Transaction[] = [
     quantity: 5,
     date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Jane Smith',
+    description: 'Customer Purchases',
   },
   {
     id: 'T003',
@@ -110,6 +112,7 @@ export const transactions: Transaction[] = [
     quantity: 10,
     date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Jane Smith',
+    description: "Jakarta's Needs",
   },
   {
     id: 'T004',
@@ -129,6 +132,7 @@ export const transactions: Transaction[] = [
     quantity: 20,
     date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
     user: 'Mike Ross',
+    description: 'Production',
   },
 ];
 

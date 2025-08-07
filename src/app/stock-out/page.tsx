@@ -21,7 +21,7 @@ import { ClientFormattedDate } from '@/components/client-formatted-date';
 export default function StockOutPage() {
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
 
-  const handleAddStockOut = (values: { itemId: string; quantity: number; }) => {
+  const handleAddStockOut = (values: { itemId: string; quantity: number; description: string; }) => {
     const item = initialInventoryItems.find(i => i.id === values.itemId);
     if (!item) return;
 
@@ -31,6 +31,7 @@ export default function StockOutPage() {
       item: item.name,
       itemId: values.itemId,
       quantity: values.quantity,
+      description: values.description,
       date: new Date().toISOString(),
       user: 'Admin', // Assuming a static user for now
     };
@@ -61,6 +62,7 @@ export default function StockOutPage() {
                 <TableHead>Date</TableHead>
                 <TableHead>Item</TableHead>
                 <TableHead>Quantity</TableHead>
+                <TableHead>Keterangan</TableHead>
                 <TableHead>User</TableHead>
               </TableRow>
             </TableHeader>
@@ -73,6 +75,7 @@ export default function StockOutPage() {
                     </TableCell>
                     <TableCell className="font-medium">{tx.item}</TableCell>
                     <TableCell>{tx.quantity}</TableCell>
+                    <TableCell>{tx.description || '-'}</TableCell>
                     <TableCell>{tx.user}</TableCell>
                   </TableRow>
                 );

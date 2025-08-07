@@ -38,6 +38,7 @@ import { InventoryItem } from '@/lib/data';
 const stockOutSchema = z.object({
   itemId: z.string().min(1, 'Please select an item.'),
   quantity: z.coerce.number().min(1, 'Quantity must be at least 1.'),
+  description: z.string().min(1, 'Keterangan is required.'),
 });
 
 type StockOutFormValues = z.infer<typeof stockOutSchema>;
@@ -46,6 +47,17 @@ interface AddStockOutDialogProps {
     onAddStockOut: (values: StockOutFormValues) => void;
     inventoryItems: InventoryItem[];
 }
+
+const descriptions = [
+    "Jakarta's Needs",
+    "Surabaya's Needs",
+    "Customer Purchases",
+    "Production",
+    "QC",
+    "External Service",
+    "Internal Service",
+    "Damage",
+];
 
 export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOutDialogProps) {
   const [open, setOpen] = useState(false);
@@ -56,6 +68,7 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
     defaultValues: {
       itemId: '',
       quantity: 1,
+      description: '',
     },
   });
 
@@ -131,6 +144,33 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
                   <FormControl>
                     <Input type="number" placeholder="0" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Keterangan</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a description" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {descriptions.map((desc) => (
+                        <SelectItem key={desc} value={desc}>
+                          {desc}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
