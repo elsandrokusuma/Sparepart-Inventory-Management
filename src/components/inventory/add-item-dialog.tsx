@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -36,6 +37,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const addItemSchema = z.object({
     name: z.string().min(1, 'Item name is required.'),
+    imageUrl: z.string().url({ message: "Please enter a valid image URL." }).optional().or(z.literal('')),
     stock: z.coerce.number().min(0, 'Stock must be a positive number.'),
     location: z.enum(['Jakarta', 'Surabaya', 'Both'], { required_error: 'Location is required.'}),
 });
@@ -48,6 +50,7 @@ export function AddItemDialog() {
     resolver: zodResolver(addItemSchema),
     defaultValues: {
       name: '',
+      imageUrl: '',
       stock: 0,
     },
   });
@@ -89,6 +92,19 @@ export function AddItemDialog() {
                   <FormLabel>Item Name</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., Wireless Mouse" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image URL</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://example.com/image.png" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -144,3 +160,4 @@ export function AddItemDialog() {
     </Dialog>
   );
 }
+
