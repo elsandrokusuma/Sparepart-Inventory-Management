@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,7 +13,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -31,12 +30,10 @@ import {
     SelectValue,
   } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { InventoryItem } from '@/lib/data';
 
-
-const addItemSchema = z.object({
+const editItemSchema = z.object({
     name: z.string().min(1, 'Item name is required.'),
     imageUrl: z.string().url({ message: "Please enter a valid image URL." }).optional().or(z.literal('')),
     stock: z.coerce.number().min(0, 'Stock must be a positive number.'),
@@ -44,55 +41,56 @@ const addItemSchema = z.object({
     dataAiHint: z.string().optional(),
 });
 
-type AddItemFormValues = z.infer<typeof addItemSchema>;
+type EditItemFormValues = z.infer<typeof editItemSchema>;
 
-interface AddItemDialogProps {
-    onAddItem: (item: Omit<InventoryItem, 'id' | 'status'>) => void;
+interface EditItemDialogProps {
+    item: InventoryItem;
+    onUpdateItem: (item: InventoryItem) => void;
+    onOpenChange: (open: boolean) => void;
 }
 
-
-export function AddItemDialog({ onAddItem }: AddItemDialogProps) {
-  const [open, setOpen] = useState(false);
+export function EditItemDialog({ item, onUpdateItem, onOpenChange }: EditItemDialogProps) {
   const { toast } = useToast();
 
-  const form = useForm<AddItemFormValues>({
-    resolver: zodResolver(addItemSchema),
+  const form = useForm<EditItemFormValues>({
+    resolver: zodResolver(editItemSchema),
     defaultValues: {
-      name: '',
-      imageUrl: '',
-      stock: 0,
-      dataAiHint: '',
+      name: item.name,
+      imageUrl: item.imageUrl,
+      stock: item.stock,
+      location: item.location,
+      dataAiHint: item.dataAiHint,
     },
   });
-
-  function onSubmit(values: AddItemFormValues) {
-    onAddItem(values);
-    toast({
-      title: "Item Added",
-      description: `Successfully added "${values.name}" to the inventory.`,
+  
+  useEffect(() => {
+    form.reset({
+        name: item.name,
+        imageUrl: item.imageUrl,
+        stock: item.stock,
+        location: item.location,
+        dataAiHint: item.dataAiHint,
     });
-    setOpen(false);
-    form.reset();
+  }, [item, form]);
+
+
+  function onSubmit(values: EditItemFormValues) {
+    const newStatus = values.stock === 0 ? 'Out of Stock' : values.stock < 10 ? 'Low Stock' : 'In Stock';
+    onUpdateItem({ ...item, ...values, status: newStatus });
+    toast({
+      title: "Item Updated",
+      description: `Successfully updated "${values.name}".`,
+    });
+    onOpenChange(false);
   }
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-        setOpen(isOpen);
-        if (!isOpen) {
-            form.reset();
-        }
-    }}>
-      <DialogTrigger asChild>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add Item
-        </Button>
-      </DialogTrigger>
+    <Dialog open={true} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>Add New Inventory Item</DialogTitle>
+          <DialogTitle>Edit Inventory Item</DialogTitle>
           <DialogDescription>
-            Fill out the form below to add a new item to the inventory.
+            Update the details for the inventory item below.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -160,7 +158,7 @@ export function AddItemDialog({ onAddItem }: AddItemDialogProps) {
                 </FormItem>
               )}
             />
-             <FormField
+            <FormField
               control={form.control}
               name="dataAiHint"
               render={({ field }) => (
@@ -175,10 +173,10 @@ export function AddItemDialog({ onAddItem }: AddItemDialogProps) {
             />
            
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit">Save Item</Button>
+              <Button type="submit">Save Changes</Button>
             </DialogFooter>
           </form>
         </Form>

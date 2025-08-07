@@ -1,3 +1,5 @@
+"use client";
+
 import Image from 'next/image';
 import {
   Table,
@@ -9,7 +11,7 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { inventoryItems } from '@/lib/data';
+import { inventoryItems as initialInventoryItems, InventoryItem } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
 import {
@@ -20,6 +22,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { AddItemDialog } from '@/components/inventory/add-item-dialog';
+import { useState } from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from '@/hooks/use-toast';
+import { EditItemDialog } from '@/components/inventory/edit-item-dialog';
+
 
 const statusVariantMap = {
   'In Stock': 'default',
@@ -34,6 +50,42 @@ const statusColorMap = {
 } as const;
 
 export default function InventoryPage() {
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(initialInventoryItems);
+  const [itemToDelete, setItemToDelete] = useState<InventoryItem | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<InventoryItem | null>(null);
+  const { toast } = useToast();
+
+  const handleDelete = (item: InventoryItem) => {
+    setItemToDelete(item);
+  };
+
+  const confirmDelete = () => {
+    if (itemToDelete) {
+      setInventoryItems(inventoryItems.filter((item) => item.id !== itemToDelete.id));
+      toast({
+        title: "Item Deleted",
+        description: `Successfully deleted "${itemToDelete.name}".`,
+      });
+      setItemToDelete(null);
+    }
+  };
+
+  const handleEdit = (item: InventoryItem) => {
+    setItemToEdit(item);
+  };
+
+  const handleUpdateItem = (updatedItem: InventoryItem) => {
+    setInventoryItems(inventoryItems.map((item) => item.id === updatedItem.id ? updatedItem : item));
+    setItemToEdit(null);
+  };
+
+  const handleAddItem = (newItem: Omit<InventoryItem, 'id' | 'status'>) => {
+    const newStatus = newItem.stock === 0 ? 'Out of Stock' : newItem.stock < 10 ? 'Low Stock' : 'In Stock';
+    const newId = (Math.max(...inventoryItems.map(i => parseInt(i.id))) + 1).toString();
+    setInventoryItems([...inventoryItems, { ...newItem, id: newId, status: newStatus }]);
+  };
+
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -44,7 +96,7 @@ export default function InventoryPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <AddItemDialog />
+          <AddItemDialog onAddItem={handleAddItem} />
         </div>
       </div>
       <Card>
@@ -70,7 +122,7 @@ export default function InventoryPage() {
                       alt={item.name}
                       className="aspect-square rounded-md object-cover"
                       height="64"
-                      src={item.imageUrl}
+                      src={item.imageUrl || 'https://placehold.co/100x100.png'}
                       width="64"
                       data-ai-hint={item.dataAiHint}
                     />
@@ -100,8 +152,8 @@ export default function InventoryPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleEdit(item)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleDelete(item)} className="text-red-500 focus:text-red-500">Delete</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -111,6 +163,27 @@ export default function InventoryPage() {
           </Table>
         </CardContent>
       </Card>
+      <AlertDialog open={!!itemToDelete} onOpenChange={() => setItemToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the item "{itemToDelete?.name}".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setItemToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      {itemToEdit && (
+        <EditItemDialog
+          item={itemToEdit}
+          onUpdateItem={handleUpdateItem}
+          onOpenChange={() => setItemToEdit(null)}
+        />
+      )}
     </div>
   );
 }
