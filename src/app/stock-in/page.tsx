@@ -39,7 +39,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Badge } from '@/components/ui/badge';
 
 const stockInSchema = z.object({
   itemId: z.string().min(1, 'Please select an item.'),
