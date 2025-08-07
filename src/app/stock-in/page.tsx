@@ -64,7 +64,6 @@ export default function StockInPage() {
                 <TableHead>Location</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead>Supplier</TableHead>
-                <TableHead>User</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -79,7 +78,6 @@ export default function StockInPage() {
                     <TableCell>{item?.location || '-'}</TableCell>
                     <TableCell>{tx.quantity}</TableCell>
                     <TableCell>{tx.supplier}</TableCell>
-                    <TableCell>{tx.user}</TableCell>
                   </TableRow>
                 );
               })}
