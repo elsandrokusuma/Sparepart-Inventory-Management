@@ -1,4 +1,7 @@
 
+"use client";
+
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -10,10 +13,26 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { preOrders } from '@/lib/data';
+import { preOrders as initialPreOrders, inventoryItems, PreOrder } from '@/lib/data';
 import { format } from 'date-fns';
+import { AddPreOrderDialog } from '@/components/pre-orders/add-pre-order-dialog';
+
 
 export default function PreOrdersPage() {
+  const [preOrders, setPreOrders] = useState<PreOrder[]>(initialPreOrders);
+  const [activeTab, setActiveTab] = useState<'jakarta' | 'surabaya'>('jakarta');
+
+  const handleAddPreOrder = (newOrderData: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location'>) => {
+    const newOrder: PreOrder = {
+      ...newOrderData,
+      id: `PO-${(preOrders.length + 1).toString().padStart(3, '0')}`,
+      orderDate: new Date().toISOString(),
+      status: 'Pending',
+      location: activeTab === 'jakarta' ? 'Jakarta' : 'Surabaya',
+    };
+    setPreOrders(currentOrders => [newOrder, ...currentOrders]);
+  };
+  
   const jakartaPreOrders = preOrders.filter(
     (order) => order.location === 'Jakarta'
   );
@@ -79,8 +98,19 @@ export default function PreOrdersPage() {
             Track and manage customer pre-orders for each location.
           </p>
         </div>
+        <div className="flex items-center space-x-2">
+           <AddPreOrderDialog
+            location={activeTab}
+            inventoryItems={inventoryItems}
+            onAddPreOrder={handleAddPreOrder}
+          />
+        </div>
       </div>
-      <Tabs defaultValue="jakarta" className="space-y-4">
+      <Tabs 
+        defaultValue="jakarta" 
+        className="space-y-4"
+        onValueChange={(value) => setActiveTab(value as 'jakarta' | 'surabaya')}
+      >
         <TabsList>
           <TabsTrigger value="jakarta">Jakarta</TabsTrigger>
           <TabsTrigger value="surabaya">Surabaya</TabsTrigger>
