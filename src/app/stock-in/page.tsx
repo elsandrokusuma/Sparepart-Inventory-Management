@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
 } from '@/components/ui/card';
-import { transactions as initialTransactions, Transaction, InventoryItem, inventoryItems as initialInventoryItems, locations } from '@/lib/data';
+import { Transaction, InventoryItem, locations } from '@/lib/data';
 import {
   Table,
   TableBody,
@@ -26,6 +26,7 @@ import { format } from 'date-fns';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { getTransactions, addTransaction, getInventoryItems } from '@/lib/firebase/firestore';
 
 const fromOptions = [
     "Items from Jakarta",
@@ -39,7 +40,8 @@ const fromOptions = [
 
 
 export default function StockInPage() {
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
   const [filters, setFilters] = useState<{
     dateRange: DateRange | undefined;
     item: string;
@@ -53,13 +55,22 @@ export default function StockInPage() {
   });
 
   const [popoverOpen, setPopoverOpen] = useState(false);
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const handleAddStockIn = (values: { itemId: string; quantity: number; from: string; }) => {
-    const item = initialInventoryItems.find(i => i.id === values.itemId);
+  const fetchData = async () => {
+    const [transactionsData, itemsData] = await Promise.all([getTransactions(), getInventoryItems()]);
+    setTransactions(transactionsData);
+    setInventoryItems(itemsData);
+  };
+
+  const handleAddStockIn = async (values: { itemId: string; quantity: number; from: string; }) => {
+    const item = inventoryItems.find(i => i.id === values.itemId);
     if (!item) return;
 
-    const newTransaction: Transaction = {
-      id: `T${(transactions.length + 1).toString().padStart(3, '0')}`,
+    const newTransaction: Omit<Transaction, 'id'> = {
       type: 'IN',
       item: item.name,
       itemId: values.itemId,
@@ -68,7 +79,8 @@ export default function StockInPage() {
       date: new Date().toISOString(),
       user: 'Admin', // Assuming a static user for now
     };
-    setTransactions(prev => [newTransaction, ...prev]);
+    await addTransaction(newTransaction);
+    fetchData();
   };
 
   const clearFilters = () => {
@@ -96,7 +108,7 @@ export default function StockInPage() {
       if (dateRange?.from && new Date(tx.date) < dateRange.from) return false;
       if (dateRange?.to && new Date(tx.date) > new Date(dateRange.to).setHours(23, 59, 59, 999)) return false;
       
-      const inventoryItem = initialInventoryItems.find(i => i.id === tx.itemId);
+      const inventoryItem = inventoryItems.find(i => i.id === tx.itemId);
       if (location && inventoryItem?.location.toLowerCase() !== location.toLowerCase()) return false;
       
       if (item && tx.item.toLowerCase() !== item.toLowerCase()) return false;
@@ -181,7 +193,7 @@ export default function StockInPage() {
                        <div className="col-span-2">
                             <FilterCombobox
                                 type="item"
-                                options={initialInventoryItems.map(item => ({value: item.name.toLowerCase(), label: item.name}))}
+                                options={inventoryItems.map(item => ({value: item.name.toLowerCase(), label: item.name}))}
                                 value={filters.item}
                                 onChange={(value) => setFilters(f => ({...f, item: value}))}
                             />
@@ -217,7 +229,7 @@ export default function StockInPage() {
                 </div>
               </PopoverContent>
             </Popover>
-            <AddStockInDialog onAddStockIn={handleAddStockIn} inventoryItems={initialInventoryItems}/>
+            <AddStockInDialog onAddStockIn={handleAddStockIn} inventoryItems={inventoryItems}/>
         </div>
       </div>
 
@@ -235,7 +247,7 @@ export default function StockInPage() {
             </TableHeader>
             <TableBody>
               {stockInTransactions.map((tx) => {
-                const item = initialInventoryItems.find(i => i.id === tx.itemId);
+                const item = inventoryItems.find(i => i.id === tx.itemId);
                 return (
                   <TableRow key={tx.id}>
                     <TableCell>
@@ -306,5 +318,3 @@ function FilterCombobox({ type, options, value, onChange }: { type: string, opti
     </Popover>
   )
 }
-
-    

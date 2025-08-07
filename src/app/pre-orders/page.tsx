@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -13,44 +13,56 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { preOrders as initialPreOrders, inventoryItems, PreOrder } from '@/lib/data';
+import { PreOrder, InventoryItem } from '@/lib/data';
 import { format } from 'date-fns';
 import { AddPreOrderDialog } from '@/components/pre-orders/add-pre-order-dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { PreOrderDetailsDialog } from '@/components/pre-orders/pre-order-details-dialog';
+import { getInventoryItems, getPreOrders, addPreOrder, updatePreOrderStatus } from '@/lib/firebase/firestore';
 
 
 export default function PreOrdersPage() {
-  const [preOrders, setPreOrders] = useState<PreOrder[]>(initialPreOrders);
+  const [preOrders, setPreOrders] = useState<PreOrder[]>([]);
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
   const [activeTab, setActiveTab] = useState<'jakarta' | 'surabaya'>('jakarta');
   const [selectedOrders, setSelectedOrders] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
   const [selectedPreOrderDetails, setSelectedPreOrderDetails] = useState<PreOrder | null>(null);
 
-  const handleAddPreOrder = (newOrderData: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location'>) => {
-    
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const [orders, items] = await Promise.all([getPreOrders(), getInventoryItems()]);
+    setPreOrders(orders);
+    setInventoryItems(items);
+  };
+  
+  const handleAddPreOrder = async (newOrderData: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location'>) => {
     let orderIdToUse = newOrderData.orderId;
 
     if (!orderIdToUse) {
       const maxId = preOrders.reduce((max, order) => {
-        const idNum = parseInt(order.id.split('-')[1]);
+        if (!order.orderId) return max;
+        const idNum = parseInt(order.orderId.split('-')[1]);
         return idNum > max ? idNum : max;
       }, 0);
       orderIdToUse = `PO-${(maxId + 1).toString().padStart(3, '0')}`;
     }
     
-    const newOrder: PreOrder = {
+    const newOrder: Omit<PreOrder, 'id'> = {
       ...newOrderData,
-      id: `PRE-${Math.random().toString(36).substr(2, 9)}`,
       orderId: orderIdToUse,
       orderDate: new Date().toISOString(),
       status: 'Awaiting Approval',
       location: activeTab === 'jakarta' ? 'Jakarta' : 'Surabaya',
     };
 
-    setPreOrders(currentOrders => [newOrder, ...currentOrders]);
+    await addPreOrder(newOrder);
+    fetchData();
   };
   
   const jakartaPreOrders = preOrders.filter(
@@ -71,7 +83,7 @@ export default function PreOrdersPage() {
     setSelectedPreOrderDetails(order);
   };
 
-  const handleSubmitForApproval = () => {
+  const handleSubmitForApproval = async () => {
     const orderIdsToSubmit = Object.keys(selectedOrders).filter(id => selectedOrders[id]);
     
     if (orderIdsToSubmit.length === 0) {
@@ -83,17 +95,14 @@ export default function PreOrdersPage() {
       return;
     }
 
-    setPreOrders(currentOrders => 
-      currentOrders.map(order => 
-        orderIdsToSubmit.includes(order.id) ? { ...order, status: 'Pending' } : order
-      )
-    );
+    await updatePreOrderStatus(orderIdsToSubmit, 'Pending');
 
     toast({
       title: "Submitted for Approval",
       description: `${orderIdsToSubmit.length} order(s) have been sent for approval.`,
     });
     setSelectedOrders({});
+    fetchData();
   };
 
   const selectedCount = Object.values(selectedOrders).filter(Boolean).length;

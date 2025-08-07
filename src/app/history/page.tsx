@@ -1,4 +1,7 @@
 
+"use client";
+
+import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -9,10 +12,21 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { transactions } from '@/lib/data';
+import { Transaction } from '@/lib/data';
 import { format } from 'date-fns';
+import { getTransactions } from '@/lib/firebase/firestore';
 
 export default function HistoryPage() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const data = await getTransactions();
+      setTransactions(data);
+    };
+    fetchTransactions();
+  }, []);
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -50,8 +64,8 @@ export default function HistoryPage() {
                   <TableCell>{tx.quantity}</TableCell>
                   <TableCell>
                     {tx.type === 'IN'
-                      ? `From: ${tx.supplier}`
-                      : '-'}
+                      ? `From: ${tx.from}`
+                      : tx.description ? `For: ${tx.description}` : '-'}
                   </TableCell>
                   <TableCell>{tx.user}</TableCell>
                   <TableCell>

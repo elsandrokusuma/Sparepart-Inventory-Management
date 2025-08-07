@@ -17,13 +17,13 @@ export interface Transaction {
   date: string;
   user: string;
   status?: 'Pending' | 'Approved' | 'Rejected';
-  from?: string; // Changed from supplier
+  from?: string;
   description?: string;
 }
 
 export interface PreOrder {
-  id: string; // Unique ID for the row item
-  orderId?: string; // Grouping ID for the order
+  id: string;
+  orderId?: string;
   company: string;
   item: string;
   itemId: string;
@@ -32,157 +32,6 @@ export interface PreOrder {
   status: 'Pending' | 'Fulfilled' | 'Approved' | 'Rejected' | 'Awaiting Approval';
   location: 'Jakarta' | 'Surabaya';
 }
-
-export const inventoryItems: InventoryItem[] = [
-  {
-    id: '1',
-    name: 'Wireless Mouse',
-    stock: 120,
-    status: 'In Stock',
-    imageUrl: 'https://placehold.co/100x100.png',
-    location: 'R1B1T1',
-  },
-  {
-    id: '2',
-    name: 'Mechanical Keyboard',
-    stock: 8,
-    status: 'Low Stock',
-    imageUrl: 'https://placehold.co/100x100.png',
-    location: 'R1B1T2',
-  },
-  {
-    id: '3',
-    name: '27" 4K Monitor',
-    stock: 35,
-    status: 'In Stock',
-    imageUrl: 'https://placehold.co/100x100.png',
-    location: 'R1B1T3',
-  },
-  {
-    id: '4',
-    name: 'Ergonomic Office Chair',
-    stock: 0,
-    status: 'Out of Stock',
-    imageUrl: 'https://placehold.co/100x100.png',
-    location: 'R1B1T4',
-  },
-  {
-    id: '5',
-    name: 'USB-C Hub',
-    stock: 250,
-    status: 'In Stock',
-    imageUrl: 'https://placehold.co/100x100.png',
-    location: 'R1B2T1',
-  },
-  {
-    id: '6',
-    name: 'Standing Desk',
-    stock: 5,
-    status: 'Low Stock',
-    imageUrl: 'https://placehold.co/100x100.png',
-    location: 'R1B2T2',
-  },
-];
-
-export const transactions: Transaction[] = [
-  {
-    id: 'T001',
-    type: 'IN',
-    item: 'Wireless Mouse',
-    itemId: '1',
-    quantity: 50,
-    date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    user: 'John Doe',
-    from: 'Items from Vendors',
-  },
-  {
-    id: 'T002',
-    type: 'OUT',
-    item: '27" 4K Monitor',
-    itemId: '3',
-    quantity: 5,
-    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    user: 'Jane Smith',
-    description: 'Customer Purchases',
-  },
-  {
-    id: 'T003',
-    type: 'OUT',
-    item: 'Mechanical Keyboard',
-    itemId: '2',
-    quantity: 10,
-    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    user: 'Jane Smith',
-    description: "Jakarta's Needs",
-  },
-  {
-    id: 'T004',
-    type: 'IN',
-    item: 'USB-C Hub',
-    itemId: '5',
-    quantity: 100,
-    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    user: 'John Doe',
-    from: 'Items from Vendors',
-  },
-  {
-    id: 'T005',
-    type: 'OUT',
-    item: 'Wireless Mouse',
-    itemId: '1',
-    quantity: 20,
-    date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-    user: 'Mike Ross',
-    description: 'Production',
-  },
-];
-
-export const preOrders: PreOrder[] = [
-  {
-    id: 'PRE-001',
-    orderId: 'PO-001',
-    company: 'Alpha Corp',
-    item: 'Ergonomic Office Chair',
-    itemId: '4',
-    quantity: 20,
-    orderDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'Awaiting Approval',
-    location: 'Jakarta',
-  },
-  {
-    id: 'PRE-002',
-    orderId: 'PO-002',
-    company: 'Beta LLC',
-    item: 'Standing Desk',
-    itemId: '6',
-    quantity: 10,
-    orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'Pending',
-    location: 'Surabaya',
-  },
-  {
-    id: 'PRE-003',
-    orderId: 'PO-003',
-    company: 'Gamma Inc.',
-    item: 'Mechanical Keyboard',
-    itemId: '2',
-    quantity: 50,
-    orderDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'Fulfilled',
-    location: 'Jakarta',
-  },
-  {
-    id: 'PRE-004',
-    orderId: 'PO-004',
-    company: 'Delta Co',
-    item: '27" 4K Monitor',
-    itemId: '3',
-    quantity: 15,
-    orderDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'Awaiting Approval',
-    location: 'Surabaya',
-  },
-];
 
 
 export const locations = [

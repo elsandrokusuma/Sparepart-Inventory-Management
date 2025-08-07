@@ -1,11 +1,34 @@
+
+"use client";
+
 import { Package, DollarSign, ClipboardList, CheckCircle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import StatCard from '@/components/dashboard/stat-card';
 import InventoryChart from '@/components/dashboard/inventory-chart';
 import RecentTransactions from '@/components/dashboard/recent-transactions';
-import { inventoryItems, transactions, preOrders } from '@/lib/data';
+import { InventoryItem, Transaction, PreOrder } from '@/lib/data';
+import { getInventoryItems, getPreOrders, getTransactions } from '@/lib/firebase/firestore';
+import { useEffect, useState } from 'react';
 
 export default function DashboardPage() {
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [preOrders, setPreOrders] = useState<PreOrder[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [items, trans, orders] = await Promise.all([
+        getInventoryItems(),
+        getTransactions(),
+        getPreOrders(),
+      ]);
+      setInventoryItems(items);
+      setTransactions(trans);
+      setPreOrders(orders);
+    };
+    fetchData();
+  }, []);
+
   const totalStock = inventoryItems.reduce((sum, item) => sum + item.stock, 0);
   const pendingPreOrders = preOrders.filter(
     (order) => order.status === 'Pending'
@@ -61,7 +84,7 @@ export default function DashboardPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
-          <InventoryChart />
+          <InventoryChart inventoryItems={inventoryItems} />
         </Card>
         <Card className="col-span-4 lg:col-span-3">
           <RecentTransactions transactions={transactions.slice(0, 5)} />

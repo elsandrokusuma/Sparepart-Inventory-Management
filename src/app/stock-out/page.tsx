@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
 } from '@/components/ui/card';
-import { transactions as initialTransactions, Transaction, inventoryItems as initialInventoryItems, locations } from '@/lib/data';
+import { Transaction, InventoryItem, locations } from '@/lib/data';
 import {
   Table,
   TableBody,
@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AddStockOutDialog, descriptions, userOptions as allUserOptions } from '@/components/stock-out/add-stock-out-dialog';
+import { AddStockOutDialog, descriptions } from '@/components/stock-out/add-stock-out-dialog';
 import { ClientFormattedDate } from '@/components/client-formatted-date';
 import { Button } from '@/components/ui/button';
 import { Filter, X } from 'lucide-react';
@@ -26,11 +26,11 @@ import { format } from 'date-fns';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-const userOptions = Array.from(new Set(initialTransactions.map(tx => tx.user)));
+import { getTransactions, addTransaction, getInventoryItems } from '@/lib/firebase/firestore';
 
 export default function StockOutPage() {
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
   const [filters, setFilters] = useState<{
     dateRange: DateRange | undefined;
     item: string;
@@ -47,12 +47,21 @@ export default function StockOutPage() {
 
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const handleAddStockOut = (values: { itemId: string; quantity: number; description: string; user: string; }) => {
-    const item = initialInventoryItems.find(i => i.id === values.itemId);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const [transactionsData, itemsData] = await Promise.all([getTransactions(), getInventoryItems()]);
+    setTransactions(transactionsData);
+    setInventoryItems(itemsData);
+  };
+  
+  const handleAddStockOut = async (values: { itemId: string; quantity: number; description: string; user: string; }) => {
+    const item = inventoryItems.find(i => i.id === values.itemId);
     if (!item) return;
 
-    const newTransaction: Transaction = {
-      id: `T${(transactions.length + 1).toString().padStart(3, '0')}`,
+    const newTransaction: Omit<Transaction, 'id'> = {
       type: 'OUT',
       item: item.name,
       itemId: values.itemId,
@@ -61,7 +70,8 @@ export default function StockOutPage() {
       date: new Date().toISOString(),
       user: values.user,
     };
-    setTransactions(prev => [newTransaction, ...prev]);
+    await addTransaction(newTransaction);
+    fetchData();
   };
   
   const clearFilters = () => {
@@ -91,7 +101,7 @@ export default function StockOutPage() {
       if (dateRange?.from && new Date(tx.date) < dateRange.from) return false;
       if (dateRange?.to && new Date(tx.date) > new Date(dateRange.to).setHours(23, 59, 59, 999)) return false;
       
-      const inventoryItem = initialInventoryItems.find(i => i.id === tx.itemId);
+      const inventoryItem = inventoryItems.find(i => i.id === tx.itemId);
       if (location && inventoryItem?.location.toLowerCase() !== location.toLowerCase()) return false;
       
       if (item && tx.item.toLowerCase() !== item.toLowerCase()) return false;
@@ -102,6 +112,8 @@ export default function StockOutPage() {
 
       return true;
     });
+
+  const userOptions = Array.from(new Set(transactions.map(tx => tx.user)));
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -178,7 +190,7 @@ export default function StockOutPage() {
                        <div className="col-span-2">
                             <FilterCombobox
                                 type="item"
-                                options={initialInventoryItems.map(item => ({value: item.name.toLowerCase(), label: item.name}))}
+                                options={inventoryItems.map(item => ({value: item.name.toLowerCase(), label: item.name}))}
                                 value={filters.item}
                                 onChange={(value) => setFilters(f => ({...f, item: value}))}
                             />
@@ -225,7 +237,7 @@ export default function StockOutPage() {
                 </div>
               </PopoverContent>
             </Popover>
-            <AddStockOutDialog onAddStockOut={handleAddStockOut} inventoryItems={initialInventoryItems}/>
+            <AddStockOutDialog onAddStockOut={handleAddStockOut} inventoryItems={inventoryItems} userOptions={userOptions}/>
         </div>
       </div>
 
@@ -244,7 +256,7 @@ export default function StockOutPage() {
             </TableHeader>
             <TableBody>
               {stockOutTransactions.map((tx) => {
-                 const item = initialInventoryItems.find(i => i.id === tx.itemId);
+                 const item = inventoryItems.find(i => i.id === tx.itemId);
                 return (
                   <TableRow key={tx.id}>
                     <TableCell>

@@ -3,7 +3,7 @@
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 import { CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { inventoryItems } from '@/lib/data';
+import { InventoryItem } from '@/lib/data';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 const chartConfig = {
@@ -13,7 +13,11 @@ const chartConfig = {
   },
 };
 
-export default function InventoryChart() {
+interface InventoryChartProps {
+    inventoryItems: InventoryItem[];
+}
+
+export default function InventoryChart({ inventoryItems }: InventoryChartProps) {
   const data = inventoryItems.reduce((acc, item) => {
     const existingLocation = acc.find((c) => c.name === item.location);
     if (existingLocation) {

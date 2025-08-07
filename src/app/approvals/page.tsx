@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -12,10 +12,11 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { preOrders as initialPreOrders, PreOrder } from '@/lib/data';
+import { PreOrder } from '@/lib/data';
 import { format } from 'date-fns';
 import { Check, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { getPreOrders, updatePreOrderStatusByOrderId } from '@/lib/firebase/firestore';
 
 interface GroupedPreOrder {
   orderId: string;
@@ -28,19 +29,26 @@ interface GroupedPreOrder {
 }
 
 export default function ApprovalsPage() {
-  const [preOrders, setPreOrders] = useState<PreOrder[]>(initialPreOrders);
+  const [preOrders, setPreOrders] = useState<PreOrder[]>([]);
   const { toast } = useToast();
 
-  const handleApproval = (orderId: string, newStatus: 'Approved' | 'Rejected') => {
-    setPreOrders(currentOrders =>
-      currentOrders.map(order =>
-        order.orderId === orderId ? { ...order, status: newStatus } : order
-      )
-    );
+  useEffect(() => {
+    fetchPendingApprovals();
+  }, []);
+
+  const fetchPendingApprovals = async () => {
+    const allOrders = await getPreOrders();
+    const pending = allOrders.filter(order => order.status === 'Pending');
+    setPreOrders(pending);
+  };
+
+  const handleApproval = async (orderId: string, newStatus: 'Approved' | 'Rejected') => {
+    await updatePreOrderStatusByOrderId(orderId, newStatus);
     toast({
       title: `Pre-Order ${newStatus}`,
       description: `Order ${orderId} has been successfully ${newStatus.toLowerCase()}.`,
     });
+    fetchPendingApprovals();
   };
   
   const pendingApprovals = preOrders.filter(order => order.status === 'Pending');

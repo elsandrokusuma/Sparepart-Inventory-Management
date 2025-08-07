@@ -33,7 +33,7 @@ import {
 } from '@/components/ui/select';
 import { PackageMinus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { InventoryItem, transactions } from '@/lib/data';
+import { InventoryItem } from '@/lib/data';
 
 const stockOutSchema = z.object({
   itemId: z.string().min(1, 'Please select an item.'),
@@ -47,6 +47,7 @@ type StockOutFormValues = z.infer<typeof stockOutSchema>;
 interface AddStockOutDialogProps {
     onAddStockOut: (values: StockOutFormValues) => void;
     inventoryItems: InventoryItem[];
+    userOptions: string[];
 }
 
 export const descriptions = [
@@ -60,9 +61,7 @@ export const descriptions = [
     "Damage",
 ];
 
-export const userOptions = Array.from(new Set(transactions.map(tx => tx.user)));
-
-export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOutDialogProps) {
+export function AddStockOutDialog({ onAddStockOut, inventoryItems, userOptions }: AddStockOutDialogProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -188,7 +187,7 @@ export function AddStockOutDialog({ onAddStockOut, inventoryItems }: AddStockOut
                 <FormItem>
                   <FormLabel>For</FormLabel>
                   <Select
-                    onValuechange={field.onChange}
+                    onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>

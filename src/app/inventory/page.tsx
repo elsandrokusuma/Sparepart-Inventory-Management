@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { inventoryItems as initialInventoryItems, InventoryItem } from '@/lib/data';
+import { InventoryItem } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Search } from 'lucide-react';
 import {
@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { AddItemDialog } from '@/components/inventory/add-item-dialog';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,6 +37,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { EditItemDialog } from '@/components/inventory/edit-item-dialog';
 import { Input } from '@/components/ui/input';
+import { addInventoryItem, deleteInventoryItem, getInventoryItems, updateInventoryItem } from '@/lib/firebase/firestore';
 
 
 const statusVariantMap = {
@@ -52,24 +53,34 @@ const statusColorMap = {
 } as const;
 
 export default function InventoryPage() {
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(initialInventoryItems);
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
   const [itemToDelete, setItemToDelete] = useState<InventoryItem | null>(null);
   const [itemToEdit, setItemToEdit] = useState<InventoryItem | null>(null);
   const [filter, setFilter] = useState('');
   const { toast } = useToast();
+  
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = async () => {
+    const items = await getInventoryItems();
+    setInventoryItems(items);
+  };
 
   const handleDelete = (item: InventoryItem) => {
     setItemToDelete(item);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (itemToDelete) {
-      setInventoryItems(inventoryItems.filter((item) => item.id !== itemToDelete.id));
+      await deleteInventoryItem(itemToDelete.id);
       toast({
         title: "Item Deleted",
         description: `Successfully deleted "${itemToDelete.name}".`,
       });
       setItemToDelete(null);
+      fetchItems();
     }
   };
 
@@ -77,15 +88,16 @@ export default function InventoryPage() {
     setItemToEdit(item);
   };
 
-  const handleUpdateItem = (updatedItem: InventoryItem) => {
-    setInventoryItems(inventoryItems.map((item) => item.id === updatedItem.id ? updatedItem : item));
+  const handleUpdateItem = async (updatedItem: InventoryItem) => {
+    await updateInventoryItem(updatedItem.id, updatedItem);
     setItemToEdit(null);
+    fetchItems();
   };
 
-  const handleAddItem = (newItem: Omit<InventoryItem, 'id' | 'status'>) => {
+  const handleAddItem = async (newItem: Omit<InventoryItem, 'id' | 'status'>) => {
     const newStatus = newItem.stock === 0 ? 'Out of Stock' : newItem.stock < 10 ? 'Low Stock' : 'In Stock';
-    const newId = (Math.max(...inventoryItems.map(i => parseInt(i.id))) + 1).toString();
-    setInventoryItems([...inventoryItems, { ...newItem, id: newId, status: newStatus }]);
+    await addInventoryItem({ ...newItem, status: newStatus });
+    fetchItems();
   };
 
   const filteredItems = inventoryItems.filter(item =>
