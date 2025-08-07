@@ -54,9 +54,9 @@ export default function InventoryPage() {
               <TableRow>
                 <TableHead className="w-[100px]">Photo</TableHead>
                 <TableHead>Name</TableHead>
+                <TableHead>Location</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Stock</TableHead>
-                <TableHead>Location</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -76,6 +76,7 @@ export default function InventoryPage() {
                     />
                   </TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
+                  <TableCell>{item.location}</TableCell>
                   <TableCell>
                     <Badge
                       variant={statusVariantMap[item.status]}
@@ -85,7 +86,6 @@ export default function InventoryPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>{item.stock}</TableCell>
-                  <TableCell>{item.location}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
