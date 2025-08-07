@@ -236,3 +236,12 @@ export const locations = [
     { value: 'L4B1T2', label: 'L4B1T2' },
     { value: 'L4B1T3', label: 'L4B1T3' },
 ];
+
+export const suppliers = [
+    "ADMARK", "AILIDA", "AOBAO", "BETTERWAY", "BOYONG", "CMX", "DSPPA", 
+    "DTECH", "FALY", "HAITIAN", "HANGZHOU GLOBE", "HENGNUO", "HONGXIN", 
+    "HUNTER", "JBL", "JINJUE", "JOJO", "JOY", "LAIKESI", "LANGTING", 
+    "LESHENG", "LONBON", "MEIVLE", "MRS YANG", "NINGBO LEON", "OKSN", 
+    "PHONSION", "SBE", "TANGDA", "TIANYI", "TONOCH", "TOPWAY", "TRUEMAGIC", 
+    "YIKE", "HENGXIN", "LISOUND"
+];
