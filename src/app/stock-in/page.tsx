@@ -156,7 +156,7 @@ export default function StockInPage() {
             <CardFooter className="flex-col items-start gap-2">
                 <Button>Process CSV</Button>
                 <p className="text-xs text-muted-foreground">
-                    Required columns: SKU, Quantity, Supplier
+                    Required columns: ItemID, Quantity, Supplier
                 </p>
             </CardFooter>
         </Card>
