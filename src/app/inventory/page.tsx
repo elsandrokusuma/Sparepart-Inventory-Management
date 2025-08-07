@@ -52,12 +52,11 @@ export default function InventoryPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="hidden w-[100px] sm:table-cell">
-                  <span className="sr-only">Image</span>
-                </TableHead>
+                <TableHead className="w-[100px]">Photo</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="hidden md:table-cell">Stock</TableHead>
+                <TableHead>Stock</TableHead>
+                <TableHead>Location</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -66,7 +65,7 @@ export default function InventoryPage() {
             <TableBody>
               {inventoryItems.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell className="hidden sm:table-cell">
+                  <TableCell>
                     <Image
                       alt={item.name}
                       className="aspect-square rounded-md object-cover"
@@ -85,9 +84,8 @@ export default function InventoryPage() {
                       {item.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {item.stock}
-                  </TableCell>
+                  <TableCell>{item.stock}</TableCell>
+                  <TableCell>{item.location}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
