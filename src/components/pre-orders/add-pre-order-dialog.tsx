@@ -36,6 +36,7 @@ import { useToast } from '@/hooks/use-toast';
 import { InventoryItem, PreOrder } from '@/lib/data';
 
 const addPreOrderSchema = z.object({
+  company: z.string().min(1, 'Company name is required.'),
   itemId: z.string().min(1, 'Please select an item.'),
   quantity: z.coerce.number().min(1, 'Quantity must be at least 1.'),
 });
@@ -43,7 +44,7 @@ const addPreOrderSchema = z.object({
 type AddPreOrderFormValues = z.infer<typeof addPreOrderSchema>;
 
 interface AddPreOrderDialogProps {
-    onAddPreOrder: (values: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location' | 'customer'>) => void;
+    onAddPreOrder: (values: Omit<PreOrder, 'id' | 'orderDate' | 'status' | 'location'>) => void;
     inventoryItems: InventoryItem[];
     location: 'jakarta' | 'surabaya';
 }
@@ -56,6 +57,7 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
   const form = useForm<AddPreOrderFormValues>({
     resolver: zodResolver(addPreOrderSchema),
     defaultValues: {
+      company: '',
       itemId: '',
       quantity: 1,
     },
@@ -66,6 +68,7 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
     if (!selectedItem) return;
 
     onAddPreOrder({ 
+        company: values.company,
         item: selectedItem.name,
         itemId: values.itemId,
         quantity: values.quantity,
@@ -101,6 +104,19 @@ export function AddPreOrderDialog({ onAddPreOrder, inventoryItems, location }: A
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+            <FormField
+              control={form.control}
+              name="company"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Company Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Alpha Corp" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-2 gap-4">
                 <FormField
                 control={form.control}

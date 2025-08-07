@@ -23,7 +23,7 @@ export interface Transaction {
 
 export interface PreOrder {
   id: string;
-  customer: string;
+  company: string;
   item: string;
   itemId: string;
   quantity: number;
@@ -139,7 +139,7 @@ export const transactions: Transaction[] = [
 export const preOrders: PreOrder[] = [
   {
     id: 'PO-001',
-    customer: 'Alpha Corp',
+    company: 'Alpha Corp',
     item: 'Ergonomic Office Chair',
     itemId: '4',
     quantity: 20,
@@ -149,7 +149,7 @@ export const preOrders: PreOrder[] = [
   },
   {
     id: 'PO-002',
-    customer: 'Beta LLC',
+    company: 'Beta LLC',
     item: 'Standing Desk',
     itemId: '6',
     quantity: 10,
@@ -159,7 +159,7 @@ export const preOrders: PreOrder[] = [
   },
   {
     id: 'PO-003',
-    customer: 'Gamma Inc.',
+    company: 'Gamma Inc.',
     item: 'Mechanical Keyboard',
     itemId: '2',
     quantity: 50,
@@ -169,7 +169,7 @@ export const preOrders: PreOrder[] = [
   },
   {
     id: 'PO-004',
-    customer: 'Delta Co',
+    company: 'Delta Co',
     item: '27" 4K Monitor',
     itemId: '3',
     quantity: 15,
