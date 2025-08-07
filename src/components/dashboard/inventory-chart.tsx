@@ -1,9 +1,17 @@
+
 "use client";
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 import { CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { inventoryItems } from '@/lib/data';
-import { ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+
+const chartConfig = {
+  total: {
+    label: "Stock",
+    color: "hsl(var(--primary))",
+  },
+};
 
 export default function InventoryChart() {
   const data = inventoryItems.reduce((acc, item) => {
@@ -22,8 +30,8 @@ export default function InventoryChart() {
         <CardTitle>Inventory by Category</CardTitle>
       </CardHeader>
       <CardContent className="pl-2">
-        <ResponsiveContainer width="100%" height={350}>
-          <BarChart data={data}>
+        <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+          <BarChart accessibilityLayer data={data} margin={{ top: 20 }}>
             <XAxis
               dataKey="name"
               stroke="#888888"
@@ -38,13 +46,13 @@ export default function InventoryChart() {
               axisLine={false}
               tickFormatter={(value) => `${value}`}
             />
-            <Tooltip
+            <ChartTooltip
                 cursor={{ fill: 'hsl(var(--muted))' }}
                 content={<ChartTooltipContent />}
             />
             <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
           </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
     </>
   );
